@@ -5,16 +5,13 @@ import type { DependencyAuditOptions } from '@taskworld/platform-audit'
 
 async function run(): Promise<void> {
   try {
-    const packageManager: DependencyAuditOptions['packageManager'] = core.getInput(
-      'package-manager',
-    ) as DependencyAuditOptions['packageManager']
+    const path: string = core.getInput('path') ?? (process.env.GITHUB_WORKSPACE as string)
+    const packageManager: DependencyAuditOptions['packageManager'] =
+      (core.getInput('package-manager') as DependencyAuditOptions['packageManager']) ?? 'pnpm'
     const identifier = core.getInput('identifier') ?? context.repo.repo
 
     if (context.eventName === 'pull_request') {
-      const result = await auditPR(
-        { path: process.env.GITHUB_WORKSPACE as string, packageManager, level: 'moderate' },
-        identifier,
-      )
+      const result = await auditPR({ packageManager, path, level: 'moderate' }, identifier)
 
       core.setOutput('vulnerabilities', result.vulnerabilities)
     }

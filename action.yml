@@ -2,10 +2,10 @@ name: 'Audit action'
 description: 'Audits dependencies for vulnerabilities'
 author: 'Taskworld'
 inputs:
+  path:
+    description: 'Target path for the audit'
   package-manager:
-    required: true
     description: 'Package manager (pnpm or yarn)'
-    default: 'pnpm'
   identifier:
     description: 'Name of service/repo'
 runs:
