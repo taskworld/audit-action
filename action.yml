@@ -1,0 +1,13 @@
+name: 'Audit action'
+description: 'Audits dependencies for vulnerabilities'
+author: 'Taskworld'
+inputs:
+  package-manager:
+    required: true
+    description: 'Package manager (pnpm or yarn)'
+    default: 'pnpm'
+  identifier:
+    description: 'Name of service/repo'
+runs:
+  using: 'node18'
+  main: 'dist/index.js'
