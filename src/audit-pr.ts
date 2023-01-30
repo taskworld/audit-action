@@ -3,6 +3,7 @@ import {
   DependencyAuditOptions,
   DependencyAuditReport,
 } from '@taskworld/platform-audit'
+import * as core from '@actions/core'
 
 export interface AuditPRResult {
   vulnerabilities: string
@@ -14,7 +15,11 @@ export async function auditPR(
   options: DependencyAuditOptions,
   identifier: string,
 ): Promise<AuditPRResult> {
+  core.info(`Options: ${JSON.stringify(options, null, 2)}`)
+
   const report = await auditDependencies(options)
+
+  core.info(`Report: ${JSON.stringify(report, null, 2)}`)
 
   const numVulnabilities = Object.keys(report.vulnerabilities).reduce((total, level) => {
     return total + report.vulnerabilities[level as Level]
