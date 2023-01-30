@@ -5,7 +5,7 @@ import {
 } from '@taskworld/platform-audit'
 
 export interface AuditPRResult {
-  vulnerabilities: string | null
+  vulnerabilities: string
 }
 
 type Level = keyof DependencyAuditReport['vulnerabilities']
@@ -21,7 +21,11 @@ export async function auditPR(
   }, 0)
 
   if (numVulnabilities < 1) {
-    return { vulnerabilities: null }
+    const noVulnerabilities = `
+✅ No vulnerabilities found in **${identifier}**.
+`
+
+    return { vulnerabilities: noVulnerabilities }
   }
 
   const renderedVulnerabilities = `

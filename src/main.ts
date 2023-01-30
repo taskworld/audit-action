@@ -12,7 +12,7 @@ async function run(): Promise<void> {
 
     if (context.eventName === 'pull_request') {
       const result = await auditPR(
-        { path: process.env.GITHUB_WORKSPACE as string, packageManager },
+        { path: process.env.GITHUB_WORKSPACE as string, packageManager, level: 'moderate' },
         identifier,
       )
 

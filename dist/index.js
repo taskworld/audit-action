@@ -25,7 +25,10 @@ function auditPR(options, identifier) {
             return total + report.vulnerabilities[level];
         }, 0);
         if (numVulnabilities < 1) {
-            return { vulnerabilities: null };
+            const noVulnerabilities = `
+✅ No vulnerabilities found in **${identifier}**.
+`;
+            return { vulnerabilities: noVulnerabilities };
         }
         const renderedVulnerabilities = `
 ## Vulnerabilities 
@@ -104,7 +107,7 @@ function run() {
             const packageManager = core.getInput('package-manager');
             const identifier = (_a = core.getInput('identifier')) !== null && _a !== void 0 ? _a : github_1.context.repo.repo;
             if (github_1.context.eventName === 'pull_request') {
-                const result = yield (0, audit_pr_1.auditPR)({ path: process.env.GITHUB_WORKSPACE, packageManager }, identifier);
+                const result = yield (0, audit_pr_1.auditPR)({ path: process.env.GITHUB_WORKSPACE, packageManager, level: 'moderate' }, identifier);
                 core.setOutput('vulnerabilities', result.vulnerabilities);
             }
         }
