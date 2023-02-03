@@ -3,7 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@actions/core': ^1.10.0
   '@actions/github': ^5.1.1
-  '@taskworld/platform-audit': ^2.1.0
+  '@taskworld/platform-audit': ^2.1.1
   '@types/jest': ^29.4.0
   '@types/license-checker': ^25.0.3
   '@types/node': 18.11.18
@@ -16,7 +16,7 @@ specifiers:
 dependencies:
   '@actions/core': 1.10.0
   '@actions/github': 5.1.1
-  '@taskworld/platform-audit': 2.1.0
+  '@taskworld/platform-audit': 2.1.1
 
 devDependencies:
   '@types/jest': 29.4.0
@@ -765,8 +765,8 @@ packages:
       '@sinonjs/commons': 2.0.0
     dev: true
 
-  /@taskworld/platform-audit/2.1.0:
-    resolution: {integrity: sha512-ddnG5QX+MAB6o07rLIRI85GeDFTmUSBSTYZCrlzFvoo/dYWz3C84kUmQ5AcEqPRTCo98rOrK0OqXsBz382wp6A==, tarball: download/@taskworld/platform-audit/2.1.0/637d3f41ad15cbfd5cd5053ca25d6a9c240774e6}
+  /@taskworld/platform-audit/2.1.1:
+    resolution: {integrity: sha512-15evR15p/MI3H+D63HD1U/81EJSxTTYtlB+E87NayT1wNOo7XzYmj+FZYPRrReghbcRaCrvjeXG8grSQXrmNXA==, tarball: download/@taskworld/platform-audit/2.1.1/6832a1db1cb8ddc7c350e3b1fb89492446311824}
     dependencies:
       audit-types: 0.5.6
       license-checker: 25.0.1

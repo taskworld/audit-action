@@ -40,7 +40,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.auditPR = void 0;
-const platform_audit_1 = __nccwpck_require__(8189);
+const platform_audit_1 = __nccwpck_require__(2642);
 const core = __importStar(__nccwpck_require__(7733));
 function auditPR(options, identifier) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -4492,14 +4492,14 @@ exports.request = request;
 
 /***/ }),
 
-/***/ 1936:
+/***/ 1226:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.auditLicenses = exports.auditDependencies = void 0;
-const auditors_1 = __nccwpck_require__(7701);
+const auditors_1 = __nccwpck_require__(7368);
 async function auditDependencies(options) {
     const auditor = (0, auditors_1.createDependecyAuditor)(options);
     return auditor.run();
@@ -4514,7 +4514,7 @@ exports.auditLicenses = auditLicenses;
 
 /***/ }),
 
-/***/ 3525:
+/***/ 5133:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -4531,16 +4531,16 @@ exports.DependencyAuditor = DependencyAuditor;
 
 /***/ }),
 
-/***/ 7701:
+/***/ 7368:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.createLicenseAuditor = exports.createDependecyAuditor = void 0;
-const license_auditor_1 = __nccwpck_require__(9901);
-const pnpm_dependency_auditor_1 = __nccwpck_require__(8612);
-const yarn_dependency_auditor_1 = __nccwpck_require__(4475);
+const license_auditor_1 = __nccwpck_require__(6451);
+const pnpm_dependency_auditor_1 = __nccwpck_require__(9307);
+const yarn_dependency_auditor_1 = __nccwpck_require__(1024);
 function createDependecyAuditor(options) {
     switch (options.packageManager) {
         case 'pnpm':
@@ -4560,7 +4560,7 @@ exports.createLicenseAuditor = createLicenseAuditor;
 
 /***/ }),
 
-/***/ 9901:
+/***/ 6451:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -4630,7 +4630,7 @@ async function checkLicenses(opts) {
 
 /***/ }),
 
-/***/ 8612:
+/***/ 9307:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -4638,7 +4638,7 @@ async function checkLicenses(opts) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.PNPMDependencyAuditor = void 0;
 const child_process_1 = __nccwpck_require__(2081);
-const dependency_auditor_1 = __nccwpck_require__(3525);
+const dependency_auditor_1 = __nccwpck_require__(5133);
 class PNPMDependencyAuditor extends dependency_auditor_1.DependencyAuditor {
     async run() {
         const commandResult = await this.executePnpmCommand();
@@ -4653,9 +4653,9 @@ class PNPMDependencyAuditor extends dependency_auditor_1.DependencyAuditor {
                 cwd: this.options.path,
                 stdio: 'pipe',
             });
-            childProcess.stdout?.on('data', (data) => stdoutChunks.push(data));
+            childProcess.stdout?.on('data', (data) => stdoutChunks.push(data.toString('utf8')));
             childProcess.on('exit', () => {
-                return resolve(stdoutChunks.join());
+                return resolve(stdoutChunks.join(''));
             });
         });
     }
@@ -4665,7 +4665,7 @@ exports.PNPMDependencyAuditor = PNPMDependencyAuditor;
 
 /***/ }),
 
-/***/ 4475:
+/***/ 1024:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -4677,7 +4677,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.YarnDependencyAuditor = void 0;
 const child_process_1 = __nccwpck_require__(2081);
 const ndjson_1 = __importDefault(__nccwpck_require__(7284));
-const dependency_auditor_1 = __nccwpck_require__(3525);
+const dependency_auditor_1 = __nccwpck_require__(5133);
 class YarnDependencyAuditor extends dependency_auditor_1.DependencyAuditor {
     async run() {
         const auditSummary = await this.executeYarnCommand();
@@ -4707,7 +4707,7 @@ exports.YarnDependencyAuditor = YarnDependencyAuditor;
 
 /***/ }),
 
-/***/ 8189:
+/***/ 2642:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -4727,14 +4727,14 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-__exportStar(__nccwpck_require__(1936), exports);
-__exportStar(__nccwpck_require__(7701), exports);
-__exportStar(__nccwpck_require__(1998), exports);
+__exportStar(__nccwpck_require__(1226), exports);
+__exportStar(__nccwpck_require__(7368), exports);
+__exportStar(__nccwpck_require__(9582), exports);
 
 
 /***/ }),
 
-/***/ 1998:
+/***/ 9582:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
