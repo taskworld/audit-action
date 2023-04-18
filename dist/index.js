@@ -42,20 +42,20 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.auditPR = void 0;
 const platform_audit_1 = __nccwpck_require__(2642);
 const core = __importStar(__nccwpck_require__(7733));
-function auditPR(options, identifier) {
+const util_1 = __nccwpck_require__(9119);
+function auditPR(options, identifier, failureLevel) {
     return __awaiter(this, void 0, void 0, function* () {
         core.info(`Options: ${JSON.stringify(options, null, 2)}`);
         const report = yield (0, platform_audit_1.auditDependencies)(options);
         core.info(`Report: ${JSON.stringify(report, null, 2)}`);
-        const numVulnabilities = Object.keys(report.vulnerabilities).reduce((total, level) => {
-            return total + report.vulnerabilities[level];
-        }, 0);
-        if (numVulnabilities < 1) {
+        const hasVulnabilities = (0, util_1.auditReportHasVulnerabilities)(report);
+        if (!hasVulnabilities) {
             const noVulnerabilities = `
 ✅ No vulnerabilities found in **${identifier}**.
 `;
-            return { vulnerabilities: noVulnerabilities };
+            return { failed: false, vulnerabilities: noVulnerabilities };
         }
+        const failed = failureLevel ? (0, util_1.auditReportHasVulnerabilities)(report, failureLevel) : false;
         const renderedVulnerabilities = `
 ## Vulnerabilities 
 
@@ -77,7 +77,7 @@ Vulnerabilities were found in **${identifier}**.
     </tr>
   </tbody>
 </table>`;
-        return { vulnerabilities: renderedVulnerabilities };
+        return { failed, vulnerabilities: renderedVulnerabilities };
     });
 }
 exports.auditPR = auditPR;
@@ -134,8 +134,12 @@ function run() {
             const packageManager = (_b = core.getInput('package-manager')) !== null && _b !== void 0 ? _b : 'pnpm';
             const identifier = (_c = core.getInput('identifier')) !== null && _c !== void 0 ? _c : github_1.context.repo.repo;
             if (github_1.context.eventName === 'pull_request') {
-                const result = yield (0, audit_pr_1.auditPR)({ packageManager, path, level: 'moderate' }, identifier);
+                const failureLevel = core.getInput('failureLevel') !== ''
+                    ? core.getInput('failureLevel')
+                    : undefined;
+                const result = yield (0, audit_pr_1.auditPR)({ packageManager, path, level: 'moderate' }, identifier, failureLevel);
                 core.setOutput('vulnerabilities', result.vulnerabilities);
+                core.setOutput('failed', result.failed);
             }
         }
         catch (error) {
@@ -145,6 +149,29 @@ function run() {
     });
 }
 run();
+
+
+/***/ }),
+
+/***/ 9119:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.auditReportHasVulnerabilities = exports.countVulnerabilities = void 0;
+const LEVELS = ['info', 'low', 'moderate', 'high', 'critical'];
+function countVulnerabilities(report) {
+    return Object.keys(report.vulnerabilities).reduce((total, level) => {
+        return total + report.vulnerabilities[level];
+    }, 0);
+}
+exports.countVulnerabilities = countVulnerabilities;
+function auditReportHasVulnerabilities(report, level = 'info') {
+    const inferredLevels = LEVELS.slice(LEVELS.indexOf(level));
+    return inferredLevels.some((level) => report.vulnerabilities[level] > 0);
+}
+exports.auditReportHasVulnerabilities = auditReportHasVulnerabilities;
 
 
 /***/ }),
