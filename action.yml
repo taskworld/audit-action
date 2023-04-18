@@ -8,6 +8,8 @@ inputs:
     description: 'Package manager (pnpm or yarn)'
   identifier:
     description: 'Name of service/repo'
+  failureLevel:
+    description: 'Severity level causing audit to fail'
 runs:
   using: 'node16'
   main: 'dist/index.js'

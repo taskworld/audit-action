@@ -1,7 +1,7 @@
 import * as core from '@actions/core'
 import { context } from '@actions/github'
 import { auditPR } from './audit-pr'
-import type { DependencyAuditOptions } from '@taskworld/platform-audit'
+import type { DependencyAuditOptions, SeverityLevel } from './types'
 
 async function run(): Promise<void> {
   try {
@@ -11,9 +11,19 @@ async function run(): Promise<void> {
     const identifier = core.getInput('identifier') ?? context.repo.repo
 
     if (context.eventName === 'pull_request') {
-      const result = await auditPR({ packageManager, path, level: 'moderate' }, identifier)
+      const failureLevel =
+        core.getInput('failureLevel') !== ''
+          ? (core.getInput('failureLevel') as SeverityLevel)
+          : undefined
+
+      const result = await auditPR(
+        { packageManager, path, level: 'moderate' },
+        identifier,
+        failureLevel,
+      )
 
       core.setOutput('vulnerabilities', result.vulnerabilities)
+      core.setOutput('failed', result.failed)
     }
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)

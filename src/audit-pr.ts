@@ -1,15 +1,18 @@
 import { auditDependencies, DependencyAuditOptions } from '@taskworld/platform-audit'
 import * as core from '@actions/core'
 
-import { countVulnerabilities } from './util'
+import { auditReportHasVulnerabilities } from './util'
+import type { SeverityLevel } from './types'
 
 export interface AuditPRResult {
   vulnerabilities: string
+  failed: boolean
 }
 
 export async function auditPR(
   options: DependencyAuditOptions,
   identifier: string,
+  failureLevel?: SeverityLevel,
 ): Promise<AuditPRResult> {
   core.info(`Options: ${JSON.stringify(options, null, 2)}`)
 
@@ -17,15 +20,17 @@ export async function auditPR(
 
   core.info(`Report: ${JSON.stringify(report, null, 2)}`)
 
-  const numVulnabilities = countVulnerabilities(report)
+  const hasVulnabilities = auditReportHasVulnerabilities(report)
 
-  if (numVulnabilities < 1) {
+  if (!hasVulnabilities) {
     const noVulnerabilities = `
 ✅ No vulnerabilities found in **${identifier}**.
 `
 
-    return { vulnerabilities: noVulnerabilities }
+    return { failed: false, vulnerabilities: noVulnerabilities }
   }
+
+  const failed = failureLevel ? auditReportHasVulnerabilities(report, failureLevel) : false
 
   const renderedVulnerabilities = `
 ## Vulnerabilities 
@@ -49,5 +54,5 @@ Vulnerabilities were found in **${identifier}**.
   </tbody>
 </table>`
 
-  return { vulnerabilities: renderedVulnerabilities }
+  return { failed, vulnerabilities: renderedVulnerabilities }
 }
