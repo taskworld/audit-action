@@ -1,15 +1,11 @@
-import {
-  auditDependencies,
-  DependencyAuditOptions,
-  DependencyAuditReport,
-} from '@taskworld/platform-audit'
+import { auditDependencies, DependencyAuditOptions } from '@taskworld/platform-audit'
 import * as core from '@actions/core'
+
+import { countVulnerabilities } from './util'
 
 export interface AuditPRResult {
   vulnerabilities: string
 }
-
-type Level = keyof DependencyAuditReport['vulnerabilities']
 
 export async function auditPR(
   options: DependencyAuditOptions,
@@ -21,9 +17,7 @@ export async function auditPR(
 
   core.info(`Report: ${JSON.stringify(report, null, 2)}`)
 
-  const numVulnabilities = Object.keys(report.vulnerabilities).reduce((total, level) => {
-    return total + report.vulnerabilities[level as Level]
-  }, 0)
+  const numVulnabilities = countVulnerabilities(report)
 
   if (numVulnabilities < 1) {
     const noVulnerabilities = `
