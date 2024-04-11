@@ -14,9 +14,6 @@ dependencies:
   '@taskworld/platform-audit':
     specifier: ^2.1.1
     version: 2.1.1
-  '@taskworld/workspaces':
-    specifier: ^1.0.0
-    version: 1.0.0
 
 devDependencies:
   '@types/license-checker':
@@ -783,10 +780,6 @@ packages:
       ndjson: 2.0.0
     transitivePeerDependencies:
       - supports-color
-    dev: false
-
-  /@taskworld/workspaces@1.0.0:
-    resolution: {integrity: sha512-nMbVhMifVBn/qDekmBdpgNoR6ev9jomzm+U4z46b+5BuTNgsLT27eEFXBkxQLaZcZw6U8r9a9WfkNu2oSL0Uaw==, tarball: https://npm.pkg.github.com/download/@taskworld/workspaces/1.0.0/d274416f827bb0fa87bd4c7bf85ee2ef94018cfc}
     dev: false
 
   /@types/babel__core@7.20.0:
