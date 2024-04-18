@@ -4,7 +4,6 @@ author: 'Taskworld'
 inputs:
   package-name:
     description: 'name of the service or package'
-    required: true
   failure-level:
     description: 'Severity level causing audit to fail'
     default: 'low'
