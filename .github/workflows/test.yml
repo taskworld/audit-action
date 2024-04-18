@@ -1,0 +1,38 @@
+name: Check PR
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.PROD_READ_PACKAGES }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+          registry-url: https://npm.pkg.github.com/
+          scope: '@taskworld'
+
+      - name: Run Audit
+        uses: taskworld/audit-action@main
+        id: audit
+        with:
+          failure-level: 'high'
+          package-name: audit-action
+          package-manager: pnpm
+
+      - name: Add audit report to PR
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: steps.audit.conclusion == 'success'
+        with:
+          header: audit-action
+          message: ${{ steps.audit.outputs.vulnerabilities }}
