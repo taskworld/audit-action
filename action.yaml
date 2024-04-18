@@ -2,14 +2,17 @@ name: 'Audit action'
 description: 'Audits dependencies for vulnerabilities'
 author: 'Taskworld'
 inputs:
-  path:
-    description: 'Target path for the audit'
+  package-name:
+    description: 'name of the service or package'
+    required: true
+  failure-level:
+    description: 'Severity level causing audit to fail'
+    default: 'low'
   package-manager:
     description: 'Package manager (pnpm or yarn)'
-  identifier:
-    description: 'Name of service/repo'
-  failureLevel:
-    description: 'Severity level causing audit to fail'
+    default: 'pnpm'
+  path:
+    description: 'Target path for the audit'
 runs:
-  using: 'node16'
+  using: 'node20'
   main: 'dist/index.js'

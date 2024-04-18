@@ -1,0 +1,53 @@
+import * as core from '@actions/core'
+import { context } from '@actions/github'
+import { auditDependencies, isSeverityLevel, SEVERITY_LEVELS } from '@taskworld/platform-audit'
+
+import { noVulnerabilities, someVulnerabilities } from './render.js'
+import { hasVulnerabilities } from './utils.js'
+
+function isPackageManager(str: string): str is 'pnpm' | 'yarn' {
+  return ['pnpm', 'yarn'].includes(str)
+}
+
+async function run() {
+  const fail = core.getInput('failure-level') || 'low'
+  const name = core.getInput('package-name') || context.repo.repo
+  const pm = core.getInput('package-manager')
+
+  if (!isSeverityLevel(fail)) {
+    throw new Error(`failure-level should be one of [${SEVERITY_LEVELS.join(', ')}]`)
+  }
+
+  if (!isPackageManager(pm)) {
+    throw new Error(`'${pm}' is neither 'pnpm' or 'yarn'`)
+  }
+
+  const report = await auditDependencies(pm, {
+    level: 'moderate',
+    path: core.getInput('path') || process.env.GITHUB_WORKSPACE!,
+  })
+
+  core.info(`Report: ${JSON.stringify(report, null, 2)}`)
+
+  if (!hasVulnerabilities(report)) {
+    core.setOutput('failed', true)
+    core.setOutput('vulnerabilities', noVulnerabilities(name))
+    return
+  }
+
+  core.setOutput('vulnerabilities', someVulnerabilities(name, report.vulnerabilities))
+  core.setOutput('failed', hasVulnerabilities(report, fail))
+}
+
+// bootstrap
+if (context.eventName === 'pull_request') {
+  try {
+    run()
+  } catch (error) {
+    if (typeof error === 'string' || error instanceof Error) {
+      core.setFailed(error)
+    } else {
+      console.error(error)
+    }
+  }
+}

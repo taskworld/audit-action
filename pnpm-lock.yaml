@@ -12,8 +12,8 @@ dependencies:
     specifier: ^5.1.1
     version: 5.1.1
   '@taskworld/platform-audit':
-    specifier: ^2.1.1
-    version: 2.1.1
+    specifier: ^3.0.0
+    version: 3.0.0
 
 devDependencies:
   '@types/license-checker':
@@ -25,6 +25,9 @@ devDependencies:
   '@vercel/ncc':
     specifier: ^0.36.1
     version: 0.36.1
+  audit-types:
+    specifier: ^0.5.6
+    version: 0.5.6
   prettier:
     specifier: ^3.2.5
     version: 3.2.5
@@ -772,12 +775,11 @@ packages:
       '@sinonjs/commons': 2.0.0
     dev: true
 
-  /@taskworld/platform-audit@2.1.1:
-    resolution: {integrity: sha512-15evR15p/MI3H+D63HD1U/81EJSxTTYtlB+E87NayT1wNOo7XzYmj+FZYPRrReghbcRaCrvjeXG8grSQXrmNXA==, tarball: https://npm.pkg.github.com/download/@taskworld/platform-audit/2.1.1/6832a1db1cb8ddc7c350e3b1fb89492446311824}
+  /@taskworld/platform-audit@3.0.0:
+    resolution: {integrity: sha512-o32I0rrtKgwvrNp+XzrxK9ewkOr63v5aZ/CuZYKoBwYrbQUT1ZxDtd3rvc1ERPb7gbPNb0DVYd6CVQ5kEoT7Vg==, tarball: https://npm.pkg.github.com/download/@taskworld/platform-audit/3.0.0/c207982b4b9a300c97a294405e229de18b39ab72}
     dependencies:
       audit-types: 0.5.6
       license-checker: 25.0.1
-      ndjson: 2.0.0
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -923,7 +925,6 @@ packages:
 
   /audit-types@0.5.6:
     resolution: {integrity: sha512-Vn8k0Eq5XNdc60XW58Huybsq7QLrj6Jx1az0vgamLXmSBz5BdB+/fkWb8B+E27wC+Q60OI3Hv69z0R7kCdEfUA==}
-    dev: false
 
   /babel-jest@29.4.0(@babel/core@7.20.12):
     resolution: {integrity: sha512-M61cGPg4JBashDvIzKoIV/y95mSF6x3ome7CMEaszUTHD4uo6dtC6Nln+fvRTspYNtwy8lDHl5lmoTBSNY/a+g==}
@@ -1132,7 +1133,7 @@ packages:
     dev: true
 
   /concat-map@0.0.1:
-    resolution: {integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=}
+    resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
 
   /convert-source-map@1.9.0:
     resolution: {integrity: sha512-ASFBup0Mz1uyiIjANan1jzLQami9z1PoYSZCiiYW2FczPbenXc45FZdBZLzOT+r6+iciuEModtmCti+hjaAk0A==}
@@ -1176,6 +1177,7 @@ packages:
 
   /debuglog@1.0.1:
     resolution: {integrity: sha512-syBZ+rnAK3EgMsH2aYEOLUW7mZSY9Gb+0wUMCFsZvcmiz+HigA0LOcq/HoQqVuGG+EKykunc7QG2bzrponfaSw==}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
     dev: false
 
   /dedent@0.7.0:
@@ -1921,10 +1923,6 @@ packages:
   /json-parse-even-better-errors@2.3.1:
     resolution: {integrity: sha512-xyFwyhro/JEof6Ghe2iz2NcXoj2sloNsWr/XsERDK/oiPCfaNhl5ONfp+jQdAZRQQ0IJWNzH9zIZF7li91kh2w==}
 
-  /json-stringify-safe@5.0.1:
-    resolution: {integrity: sha512-ZClg6AaYvamvYEE82d3Iyd3vSSIjQ+odgjaTzRuO3s7toCdFKczob2i0zCh7JE8kWn17yvAWhUVxvqGwUalsRA==}
-    dev: false
-
   /json5@2.2.3:
     resolution: {integrity: sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg==}
     engines: {node: '>=6'}
@@ -2043,18 +2041,6 @@ packages:
   /natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
     dev: true
-
-  /ndjson@2.0.0:
-    resolution: {integrity: sha512-nGl7LRGrzugTtaFcJMhLbpzJM6XdivmbkdlaGcrk/LXg2KL/YBC6z1g70xh0/al+oFuVFP8N8kiWRucmeEH/qQ==}
-    engines: {node: '>=10'}
-    hasBin: true
-    dependencies:
-      json-stringify-safe: 5.0.1
-      minimist: 1.2.7
-      readable-stream: 3.6.0
-      split2: 3.2.2
-      through2: 4.0.2
-    dev: false
 
   /node-fetch@2.6.8:
     resolution: {integrity: sha512-RZ6dBYuj8dRSfxpUSu+NsdF1dpPpluJxwOp+6IoDp/sH2QNDSvurYsAa+F1WxY2RjA1iP93xhcsUoYbF2XBqVg==}
@@ -2261,15 +2247,6 @@ packages:
       npm-normalize-package-bin: 1.0.1
     dev: false
 
-  /readable-stream@3.6.0:
-    resolution: {integrity: sha512-BViHy7LKeTz4oNnkcLJ+lVSL6vpiFeX6/d3oSH8zCW7UxP2onchk+vTGB143xuFjHS3deTgkKoXXymXqymiIdA==}
-    engines: {node: '>= 6'}
-    dependencies:
-      inherits: 2.0.4
-      string_decoder: 1.3.0
-      util-deprecate: 1.0.2
-    dev: false
-
   /readdir-scoped-modules@1.1.0:
     resolution: {integrity: sha512-asaikDeqAQg7JifRsZn1NJZXo9E+VwlyCfbkZhwyISinqk5zNS6266HS5kah6P0SaQKGF6SkNnZVHUzHFYxYDw==}
     deprecated: This functionality has been moved to @npmcli/fs
@@ -2309,10 +2286,6 @@ packages:
       is-core-module: 2.11.0
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
-
-  /safe-buffer@5.2.1:
-    resolution: {integrity: sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ==}
-    dev: false
 
   /semver@5.7.1:
     resolution: {integrity: sha512-sauaDf/PZdVgrLTNYHRtpXa1iRiKcaebiKQ1BJdpQlWH2lCvexQdX55snPFyK7QzpudqbCI0qXFfOasHdyNDGQ==}
@@ -2415,12 +2388,6 @@ packages:
       spdx-ranges: 2.1.1
     dev: false
 
-  /split2@3.2.2:
-    resolution: {integrity: sha512-9NThjpgZnifTkJpzTZ7Eue85S49QwpNhZTq6GRJwObb6jnLFNGB7Qm73V5HewTROPyxD0C29xqmaI68bQtV+hg==}
-    dependencies:
-      readable-stream: 3.6.0
-    dev: false
-
   /sprintf-js@1.0.3:
     resolution: {integrity: sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==}
     dev: true
@@ -2448,12 +2415,6 @@ packages:
       is-fullwidth-code-point: 3.0.0
       strip-ansi: 6.0.1
     dev: true
-
-  /string_decoder@1.3.0:
-    resolution: {integrity: sha512-hkRX8U1WjJFd8LsDJ2yQ/wWWxaopEsABU1XfkM8A+j0+85JAGppt16cr1Whg6KIbb4okU6Mql6BOj+uup/wKeA==}
-    dependencies:
-      safe-buffer: 5.2.1
-    dev: false
 
   /strip-ansi@6.0.1:
     resolution: {integrity: sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==}
@@ -2509,12 +2470,6 @@ packages:
       glob: 7.2.3
       minimatch: 3.1.2
     dev: true
-
-  /through2@4.0.2:
-    resolution: {integrity: sha512-iOqSav00cVxEEICeD7TjLB1sueEL+81Wpzp2bY17uZjZN0pWZPuo4suZ/61VujxmqSGFfgOcNuTZ85QJwNZQpw==}
-    dependencies:
-      readable-stream: 3.6.0
-    dev: false
 
   /tmpl@1.0.5:
     resolution: {integrity: sha512-3f0uOEAQwIqGuWW2MVzYg8fV/QNnc/IpuJNG837rLuczAaLVHslWHZQj4IGiEl5Hs3kkbhwL9Ab7Hrsmuj+Smw==}
@@ -2610,10 +2565,6 @@ packages:
       escalade: 3.1.1
       picocolors: 1.0.0
     dev: true
-
-  /util-deprecate@1.0.2:
-    resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
-    dev: false
 
   /util-extend@1.0.3:
     resolution: {integrity: sha512-mLs5zAK+ctllYBj+iAQvlDCwoxU/WDOUaJkcFudeiAX6OajC6BKXJUa9a+tbtkC11dz2Ufb7h0lyvIOVn4LADA==}
