@@ -1,9 +1,15 @@
 import * as core from '@actions/core'
 import { context } from '@actions/github'
-import { auditDependencies, isSeverityLevel, SEVERITY_LEVELS } from '@taskworld/platform-audit'
 
-import { noVulnerabilities, someVulnerabilities } from './render.js'
-import { hasVulnerabilities } from './utils.js'
+import { auditDependencies } from './dependency/index.js'
+
+import {
+  hasVulnerabilities,
+  isSeverityLevel,
+  noVulnerabilities,
+  SEVERITY_LEVELS,
+  someVulnerabilities,
+} from './vulnerabilities/index.js'
 
 function isPackageManager(str: string): str is 'pnpm' | 'yarn' {
   return ['pnpm', 'yarn'].includes(str)
