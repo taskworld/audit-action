@@ -27,7 +27,7 @@ jobs:
           scope: '@taskworld'
 
       - name: Run Audit
-        uses: taskworld/audit-action@main
+        uses: ./
         id: audit
         with:
           failure-level: 'high'

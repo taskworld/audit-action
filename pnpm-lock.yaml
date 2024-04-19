@@ -12,8 +12,8 @@ dependencies:
     specifier: ^5.1.1
     version: 5.1.1
   '@taskworld/platform-audit':
-    specifier: ^3.0.0
-    version: 3.0.0
+    specifier: ^3.0.1
+    version: 3.0.1(audit-types@0.5.6)
 
 devDependencies:
   '@types/license-checker':
@@ -356,8 +356,10 @@ packages:
       '@octokit/openapi-types': 12.11.0
     dev: false
 
-  /@taskworld/platform-audit@3.0.0:
-    resolution: {integrity: sha512-o32I0rrtKgwvrNp+XzrxK9ewkOr63v5aZ/CuZYKoBwYrbQUT1ZxDtd3rvc1ERPb7gbPNb0DVYd6CVQ5kEoT7Vg==, tarball: https://npm.pkg.github.com/download/@taskworld/platform-audit/3.0.0/c207982b4b9a300c97a294405e229de18b39ab72}
+  /@taskworld/platform-audit@3.0.1(audit-types@0.5.6):
+    resolution: {integrity: sha512-L6r11bMcjiHsLasj0TJJryizQD7IQrBrDNlbxudaMHKCPH32yMesNRfwVDRce2RS32teUvC2ToZQQs9Dp/Uyig==, tarball: https://npm.pkg.github.com/download/@taskworld/platform-audit/3.0.1/3649d1de831e8691e3b9c4e8b4451240c30dc8a4}
+    peerDependencies:
+      audit-types: ^0.5.6
     dependencies:
       audit-types: 0.5.6
       license-checker: 25.0.1
