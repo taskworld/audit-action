@@ -4,6 +4,10 @@ concurrency:
   group: ${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+  pull-requests: write
+
 on:
   pull_request:
 
@@ -22,10 +26,17 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: pnpm
           registry-url: https://npm.pkg.github.com/
           scope: '@taskworld'
 
-      - name: Run Audit
+      - name: Install
+        run: pnpm install
+
+      - name: Unit test
+        run: pnpm run test
+
+      - name: Integration test
         uses: ./
         id: audit
         with:
@@ -33,13 +44,9 @@ jobs:
           package-name: audit-action
           package-manager: pnpm
 
-      - name: Add audit report to PR
-        uses: marocchino/sticky-pull-request-comment@v2
-        if: steps.audit.conclusion == 'success'
+      - if: steps.audit.conclusion == 'success'
+        name: Add audit report to PR
+        uses: marocchino/sticky-pull-request-comment@v2.9.0
         with:
           header: audit-action
           message: ${{ steps.audit.outputs.vulnerabilities }}
-
-      - if: ${{ failure() }}
-        name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3

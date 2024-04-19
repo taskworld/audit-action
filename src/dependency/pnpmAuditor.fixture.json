@@ -1,0 +1,182 @@
+{
+  "advisories": {
+    "1067582": {
+      "findings": [
+        {
+          "version": "0.13.1",
+          "paths": [".>@nestjs/common>class-validator"]
+        }
+      ],
+      "metadata": null,
+      "vulnerable_versions": "<=0.13.1",
+      "module_name": "class-validator",
+      "severity": "moderate",
+      "github_advisory_id": "GHSA-fj58-h2fr-3pp2",
+      "cves": ["CVE-2019-18413"],
+      "access": "public",
+      "patched_versions": "<0.0.0",
+      "cvss": {
+        "score": 9.8,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+      },
+      "updated": "2021-11-12T18:14:47.000Z",
+      "recommendation": "None",
+      "cwe": ["CWE-79", "CWE-89"],
+      "found_by": null,
+      "deleted": null,
+      "id": 1067582,
+      "references": "- https://nvd.nist.gov/vuln/detail/CVE-2019-18413\n- https://github.com/typestack/class-validator/issues/438\n- https://github.com/typestack/class-validator#passing-options\n- https://github.com/typestack/class-validator/issues/438#issuecomment-964728471\n- https://github.com/advisories/GHSA-fj58-h2fr-3pp2",
+      "created": "2021-10-12T16:35:45.000Z",
+      "reported_by": null,
+      "title": "SQL Injection and Cross-site Scripting in class-validator",
+      "npm_advisory_id": null,
+      "overview": "In TypeStack class-validator 0.10.2, validate() input validation can be bypassed because certain internal attributes can be overwritten via a conflicting name. Even though there is an optional forbidUnknownValues parameter that can be used to reduce the risk of this bypass, this option is not documented and thus most developers configure input validation in the vulnerable default manner. With this vulnerability, attackers can launch SQL Injection or XSS attacks by injecting arbitrary malicious input. NOTE: a software maintainer agrees with the \"is not documented\" finding but suggests that much of the responsibility for the risk lies in a different product.",
+      "url": "https://github.com/advisories/GHSA-fj58-h2fr-3pp2"
+    },
+    "1070480": {
+      "findings": [
+        {
+          "version": "0.2.5",
+          "paths": [".>@nestjs/platform-express>multer>busboy>dicer"]
+        }
+      ],
+      "metadata": null,
+      "vulnerable_versions": "<=0.3.1",
+      "module_name": "dicer",
+      "severity": "high",
+      "github_advisory_id": "GHSA-wm7h-9275-46v2",
+      "cves": ["CVE-2022-24434"],
+      "access": "public",
+      "patched_versions": "<0.0.0",
+      "cvss": {
+        "score": 7.5,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+      },
+      "updated": "2022-06-08T18:17:38.000Z",
+      "recommendation": "None",
+      "cwe": ["CWE-248"],
+      "found_by": null,
+      "deleted": null,
+      "id": 1070480,
+      "references": "- https://nvd.nist.gov/vuln/detail/CVE-2022-24434\n- https://github.com/mscdex/busboy/issues/250\n- https://github.com/mscdex/dicer/pull/22\n- https://github.com/mscdex/dicer/pull/22/commits/b7fca2e93e8e9d4439d8acc5c02f5e54a0112dac\n- https://snyk.io/vuln/SNYK-JS-DICER-2311764\n- https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-2838865\n- https://github.com/advisories/GHSA-wm7h-9275-46v2",
+      "created": "2022-05-21T00:00:25.000Z",
+      "reported_by": null,
+      "title": "Crash in HeaderParser in dicer",
+      "npm_advisory_id": null,
+      "overview": "This affects all versions of package dicer. A malicious attacker can send a modified form to server, and crash the nodejs service. A complete denial of service can be achived by sending the malicious form in a loop.",
+      "url": "https://github.com/advisories/GHSA-wm7h-9275-46v2"
+    },
+    "1081813": {
+      "findings": [
+        {
+          "version": "0.21.1",
+          "paths": [".>@taskworld/nestjs-config-module>@nestjs/common>axios"]
+        }
+      ],
+      "metadata": null,
+      "vulnerable_versions": "<0.21.2",
+      "module_name": "axios",
+      "severity": "high",
+      "github_advisory_id": "GHSA-cph5-m8f7-6c5x",
+      "cves": ["CVE-2021-3749"],
+      "access": "public",
+      "patched_versions": ">=0.21.2",
+      "cvss": {
+        "score": 7.5,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+      },
+      "updated": "2022-07-26T15:27:31.000Z",
+      "recommendation": "Upgrade to version 0.21.2 or later",
+      "cwe": ["CWE-400", "CWE-697"],
+      "found_by": null,
+      "deleted": null,
+      "id": 1081813,
+      "references": "- https://nvd.nist.gov/vuln/detail/CVE-2021-3749\n- https://github.com/axios/axios/commit/5b457116e31db0e88fede6c428e969e87f290929\n- https://huntr.dev/bounties/1e8f07fc-c384-4ff9-8498-0690de2e8c31\n- https://www.npmjs.com/package/axios\n- https://lists.apache.org/thread.html/r075d464dce95cd13c03ff9384658edcccd5ab2983b82bfc72b62bb10@%3Ccommits.druid.apache.org%3E\n- https://lists.apache.org/thread.html/r216f0fd0a3833856d6a6a1fada488cadba45f447d87010024328ccf2@%3Ccommits.druid.apache.org%3E\n- https://lists.apache.org/thread.html/r3ae6d2654f92c5851bdb73b35e96b0e4e3da39f28ac7a1b15ae3aab8@%3Ccommits.druid.apache.org%3E\n- https://lists.apache.org/thread.html/r4bf1b32983f50be00f9752214c1b53738b621be1c2b0dbd68c7f2391@%3Ccommits.druid.apache.org%3E\n- https://lists.apache.org/thread.html/r7324ecc35b8027a51cb6ed629490fcd3b2d7cf01c424746ed5744bf1@%3Ccommits.druid.apache.org%3E\n- https://lists.apache.org/thread.html/r74d0b359408fff31f87445261f0ee13bdfcac7d66f6b8e846face321@%3Ccommits.druid.apache.org%3E\n- https://lists.apache.org/thread.html/ra15d63c54dc6474b29f72ae4324bcb03038758545b3ab800845de7a1@%3Ccommits.druid.apache.org%3E\n- https://lists.apache.org/thread.html/rc263bfc5b53afcb7e849605478d73f5556eb0c00d1f912084e407289@%3Ccommits.druid.apache.org%3E\n- https://lists.apache.org/thread.html/rfa094029c959da0f7c8cd7dc9c4e59d21b03457bf0cedf6c93e1bb0a@%3Cdev.druid.apache.org%3E\n- https://lists.apache.org/thread.html/rfc5c478053ff808671aef170f3d9fc9d05cc1fab8fb64431edc66103@%3Ccommits.druid.apache.org%3E\n- https://www.oracle.com/security-alerts/cpujul2022.html\n- https://github.com/advisories/GHSA-cph5-m8f7-6c5x",
+      "created": "2021-09-01T18:23:02.000Z",
+      "reported_by": null,
+      "title": "Incorrect Comparison in axios",
+      "npm_advisory_id": null,
+      "overview": "axios is vulnerable to Inefficient Regular Expression Complexity",
+      "url": "https://github.com/advisories/GHSA-cph5-m8f7-6c5x"
+    },
+    "1082040": {
+      "findings": [
+        {
+          "version": "6.2.2",
+          "paths": [".>mongoose"]
+        }
+      ],
+      "metadata": null,
+      "vulnerable_versions": "<6.4.6",
+      "module_name": "mongoose",
+      "severity": "high",
+      "github_advisory_id": "GHSA-f825-f98c-gj3g",
+      "cves": ["CVE-2022-2564"],
+      "access": "public",
+      "patched_versions": ">=6.4.6",
+      "cvss": {
+        "score": 7,
+        "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:H"
+      },
+      "updated": "2022-08-11T22:11:25.000Z",
+      "recommendation": "Upgrade to version 6.4.6 or later",
+      "cwe": ["CWE-1321"],
+      "found_by": null,
+      "deleted": null,
+      "id": 1082040,
+      "references": "- https://nvd.nist.gov/vuln/detail/CVE-2022-2564\n- https://github.com/automattic/mongoose/commit/a45cfb6b0ce0067ae9794cfa80f7917e1fb3c6f8\n- https://huntr.dev/bounties/055be524-9296-4b2f-b68d-6d5b810d1ddd\n- https://github.com/advisories/GHSA-f825-f98c-gj3g",
+      "created": "2022-07-29T00:00:18.000Z",
+      "reported_by": null,
+      "title": "automattic/mongoose vulnerable to Prototype pollution via Schema.path",
+      "npm_advisory_id": null,
+      "overview": "Mongoose is a MongoDB object modeling tool designed to work in an asynchronous environment.\\n\\nAffected versions of this package are vulnerable to Prototype Pollution. The `Schema.path()` function is vulnerable to prototype pollution when setting the schema object. This vulnerability allows modification of the Object prototype and could be manipulated into a Denial of Service (DoS) attack.",
+      "url": "https://github.com/advisories/GHSA-f825-f98c-gj3g"
+    },
+    "1083219": {
+      "findings": [
+        {
+          "version": "6.11.2",
+          "paths": [".>@grpc/proto-loader>protobufjs"]
+        }
+      ],
+      "metadata": null,
+      "vulnerable_versions": ">=6.11.0 <6.11.3",
+      "module_name": "protobufjs",
+      "severity": "high",
+      "github_advisory_id": "GHSA-g954-5hwp-pp24",
+      "cves": ["CVE-2022-25878"],
+      "access": "public",
+      "patched_versions": ">=6.11.3",
+      "cvss": {
+        "score": 7.5,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+      },
+      "updated": "2022-08-17T15:36:48.000Z",
+      "recommendation": "Upgrade to version 6.11.3 or later",
+      "cwe": ["CWE-1321"],
+      "found_by": null,
+      "deleted": null,
+      "id": 1083219,
+      "references": "- https://nvd.nist.gov/vuln/detail/CVE-2022-25878\n- https://github.com/protobufjs/protobuf.js/pull/1731\n- https://github.com/protobufjs/protobuf.js/commit/b5f1391dff5515894830a6570e6d73f5511b2e8f\n- https://github.com/protobufjs/protobuf.js/blob/d13d5d5688052e366aa2e9169f50dfca376b32cf/src/util.js%23L176-L197\n- https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-2841507\n- https://snyk.io/vuln/SNYK-JS-PROTOBUFJS-2441248\n- https://github.com/protobufjs/protobuf.js/pull/1735\n- https://github.com/advisories/GHSA-g954-5hwp-pp24",
+      "created": "2022-05-28T00:00:20.000Z",
+      "reported_by": null,
+      "title": "Prototype Pollution in protobufjs",
+      "npm_advisory_id": null,
+      "overview": "The package protobufjs is vulnerable to Prototype Pollution, which can allow an attacker to add/modify properties of the Object.prototype. Versions after and including 6.10.0 until 6.10.3 and after and including 6.11.0 until 6.11.3 are vulnerable.\n\nThis vulnerability can occur in multiple ways:\n1. by providing untrusted user input to util.setProperty or to ReflectionObject.setParsedOption functions\n2. by parsing/loading .proto files\n\n\n",
+      "url": "https://github.com/advisories/GHSA-g954-5hwp-pp24"
+    }
+  },
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 0,
+      "moderate": 1,
+      "high": 4,
+      "critical": 0
+    },
+    "dependencies": 302,
+    "devDependencies": 0,
+    "optionalDependencies": 0,
+    "totalDependencies": 302
+  }
+}

@@ -1,0 +1,2 @@
+{"type": "auditSummary","data": {"vulnerabilities": { "info": 0, "low": 0, "moderate": 7, "high": 8, "critical": 1 },"dependencies": 664,"devDependencies": 0,"optionalDependencies": 0,"totalDependencies": 664}}
+{"type": "anotherType","data": {}}

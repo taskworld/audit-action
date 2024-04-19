@@ -1,0 +1,275 @@
+{
+  "@eslint/eslintrc@0.4.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/eslint/eslintrc",
+    "publisher": "Nicholas C. Zakas",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@eslint/eslintrc",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@eslint/eslintrc/LICENSE"
+  },
+  "@pnpm/audit@3.1.6": {
+    "licenses": "MIT",
+    "repository": "https://github.com/pnpm/pnpm/blob/main/packages/audit",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@pnpm/audit",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@pnpm/audit/LICENSE"
+  },
+  "@pnpm/lockfile-file@5.3.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/pnpm/pnpm/blob/main/packages/lockfile-file",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@pnpm/lockfile-file",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@pnpm/lockfile-file/LICENSE"
+  },
+  "@pnpm/logger@4.0.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/pnpm/logger",
+    "publisher": "Zoltan Kochan",
+    "email": "z@kochan.io",
+    "url": "https://www.kochan.io/",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@pnpm/logger",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@pnpm/logger/LICENSE"
+  },
+  "@swc/core@1.2.242": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/swc-project/swc",
+    "publisher": "강동윤",
+    "email": "kdy1997.dev@gmail.com",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@swc/core",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@swc/core/LICENSE"
+  },
+  "@swc/jest@0.2.22": {
+    "licenses": "MIT",
+    "repository": "https://github.com/swc-project/jest",
+    "publisher": "강동윤",
+    "email": "kdy1997.dev@gmail.com",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@swc/jest",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@swc/jest/LICENSE"
+  },
+  "@taskworld/eslint-config-ecmascript@1.0.4": {
+    "licenses": "Custom: http://eslint.org/docs/user-guide/configuring",
+    "repository": "https://github.com/taskworld/lint-configs",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@taskworld/eslint-config-ecmascript",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@taskworld/eslint-config-ecmascript/README.md"
+  },
+  "@taskworld/eslint-config-react@1.0.3": {
+    "licenses": "Custom: http://eslint.org/docs/user-guide/configuring",
+    "repository": "https://github.com/taskworld/lint-configs",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@taskworld/eslint-config-react",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@taskworld/eslint-config-react/README.md"
+  },
+  "@taskworld/eslint-config-typescript@1.1.1": {
+    "licenses": "Custom: http://eslint.org/docs/user-guide/configuring",
+    "repository": "https://github.com/taskworld/lint-configs",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@taskworld/eslint-config-typescript",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@taskworld/eslint-config-typescript/README.md"
+  },
+  "@taskworld/eslint-config@1.0.9": {
+    "licenses": "Custom: http://eslint.org/docs/user-guide/configuring",
+    "repository": "https://github.com/taskworld/lint-configs",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@taskworld/eslint-config",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@taskworld/eslint-config/README.md"
+  },
+  "@taskworld/platform-audit@1.0.0": {
+    "licenses": "UNLICENSED",
+    "private": true,
+    "repository": "https://github.com/taskworld/tw-platform",
+    "publisher": "Taskworld",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit"
+  },
+  "@types/jest@28.1.7": {
+    "licenses": "MIT",
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@types/jest",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@types/jest/LICENSE"
+  },
+  "@types/license-checker@25.0.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@types/license-checker",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@types/license-checker/LICENSE"
+  },
+  "@types/node@16.0.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@types/node",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@types/node/LICENSE"
+  },
+  "@types/prettier@2.7.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@types/prettier",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@types/prettier/LICENSE"
+  },
+  "@typescript-eslint/eslint-plugin@4.33.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/typescript-eslint/typescript-eslint",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@typescript-eslint/eslint-plugin",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@typescript-eslint/eslint-plugin/LICENSE"
+  },
+  "@typescript-eslint/experimental-utils@4.33.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/typescript-eslint/typescript-eslint",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@typescript-eslint/experimental-utils",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@typescript-eslint/experimental-utils/LICENSE"
+  },
+  "@typescript-eslint/parser@4.33.0": {
+    "licenses": "BSD-2-Clause",
+    "repository": "https://github.com/typescript-eslint/typescript-eslint",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@typescript-eslint/parser",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@typescript-eslint/parser/LICENSE"
+  },
+  "@typescript-eslint/scope-manager@4.33.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/typescript-eslint/typescript-eslint",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@typescript-eslint/scope-manager",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@typescript-eslint/scope-manager/LICENSE"
+  },
+  "@typescript-eslint/types@4.33.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/typescript-eslint/typescript-eslint",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@typescript-eslint/types",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@typescript-eslint/types/LICENSE"
+  },
+  "@typescript-eslint/typescript-estree@4.33.0": {
+    "licenses": "BSD-2-Clause",
+    "repository": "https://github.com/typescript-eslint/typescript-eslint",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@typescript-eslint/typescript-estree",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@typescript-eslint/typescript-estree/LICENSE"
+  },
+  "@typescript-eslint/visitor-keys@4.33.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/typescript-eslint/typescript-eslint",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@typescript-eslint/visitor-keys",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/@typescript-eslint/visitor-keys/LICENSE"
+  },
+  "eslint-config-prettier@8.5.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/prettier/eslint-config-prettier",
+    "publisher": "Simon Lydell",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/eslint-config-prettier",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/eslint-config-prettier/LICENSE"
+  },
+  "eslint-import-resolver-node@0.3.6": {
+    "licenses": "MIT",
+    "repository": "https://github.com/import-js/eslint-plugin-import",
+    "publisher": "Ben Mosher",
+    "url": "me@benmosher.com",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/eslint-import-resolver-node",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/eslint-import-resolver-node/LICENSE"
+  },
+  "eslint-module-utils@2.7.4": {
+    "licenses": "MIT",
+    "repository": "https://github.com/import-js/eslint-plugin-import",
+    "publisher": "Ben Mosher",
+    "email": "me@benmosher.com",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/eslint-module-utils",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/eslint-module-utils/LICENSE"
+  },
+  "eslint-plugin-functional@3.7.2": {
+    "licenses": "MIT",
+    "repository": "https://github.com/jonaskello/eslint-plugin-functional",
+    "publisher": "Jonas Kello",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/eslint-plugin-functional",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/eslint-plugin-functional/LICENSE"
+  },
+  "eslint-plugin-import@2.26.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/import-js/eslint-plugin-import",
+    "publisher": "Ben Mosher",
+    "email": "me@benmosher.com",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/eslint-plugin-import",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/eslint-plugin-import/LICENSE"
+  },
+  "eslint-plugin-jest-formatting@3.1.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/dangreenisrael/eslint-plugin-jest-formatting",
+    "publisher": "Dan Green-Leipciger",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/eslint-plugin-jest-formatting",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/eslint-plugin-jest-formatting/LICENSE"
+  },
+  "eslint-plugin-jsx-a11y@6.6.1": {
+    "licenses": "MIT",
+    "repository": "https://github.com/jsx-eslint/eslint-plugin-jsx-a11y",
+    "publisher": "Ethan Cohen",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/eslint-plugin-jsx-a11y",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/eslint-plugin-jsx-a11y/LICENSE.md"
+  },
+  "eslint-plugin-react-hooks@4.6.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/facebook/react",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/eslint-plugin-react-hooks",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/eslint-plugin-react-hooks/LICENSE"
+  },
+  "eslint-plugin-react@7.30.1": {
+    "licenses": "MIT",
+    "repository": "https://github.com/jsx-eslint/eslint-plugin-react",
+    "publisher": "Yannick Croissant",
+    "email": "yannick.croissant+npm@gmail.com",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/eslint-plugin-react",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/eslint-plugin-react/LICENSE"
+  },
+  "eslint-plugin-simple-import-sort@7.0.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/lydell/eslint-plugin-simple-import-sort",
+    "publisher": "Simon Lydell",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/eslint-plugin-simple-import-sort",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/eslint-plugin-simple-import-sort/LICENSE"
+  },
+  "eslint-scope@5.1.1": {
+    "licenses": "BSD-2-Clause",
+    "repository": "https://github.com/eslint/eslint-scope",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/eslint-scope",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/eslint-scope/LICENSE"
+  },
+  "eslint-utils@2.1.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/mysticatea/eslint-utils",
+    "publisher": "Toru Nagashima",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/eslint-utils",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/eslint-utils/LICENSE"
+  },
+  "eslint-visitor-keys@2.1.0": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/eslint/eslint-visitor-keys",
+    "publisher": "Toru Nagashima",
+    "url": "https://github.com/mysticatea",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/eslint-visitor-keys",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/eslint-visitor-keys/LICENSE"
+  },
+  "eslint@7.32.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/eslint/eslint",
+    "publisher": "Nicholas C. Zakas",
+    "email": "nicholas+npm@nczconsulting.com",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/eslint",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/eslint/LICENSE"
+  },
+  "jest@28.1.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/facebook/jest",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/jest",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/jest/LICENSE"
+  },
+  "license-checker@25.0.1": {
+    "licenses": "BSD-3-Clause",
+    "repository": "https://github.com/davglass/license-checker",
+    "publisher": "Dav Glass",
+    "email": "davglass@gmail.com",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/license-checker",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/license-checker/LICENSE"
+  },
+  "rimraf@3.0.2": {
+    "licenses": "ISC",
+    "repository": "https://github.com/isaacs/rimraf",
+    "publisher": "Isaac Z. Schlueter",
+    "email": "i@izs.me",
+    "url": "http://blog.izs.me/",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/rimraf",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/rimraf/LICENSE"
+  },
+  "typescript@4.7.4": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/Microsoft/TypeScript",
+    "publisher": "Microsoft Corp.",
+    "path": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/typescript",
+    "licenseFile": "/Users/michael/code/tw-platform/packages/platform-audit/node_modules/typescript/LICENSE.txt"
+  }
+}
