@@ -19637,34 +19637,30 @@ var require_lib4 = __commonJS({
 var core = __toESM(require_core());
 var import_github = __toESM(require_github());
 
-// node_modules/.pnpm/@taskworld+platform-audit@3.0.0/node_modules/@taskworld/platform-audit/dist/utils.js
+// node_modules/.pnpm/@taskworld+platform-audit@3.0.1_audit-types@0.5.6/node_modules/@taskworld/platform-audit/dist/utils.js
+var import_util = require("util");
 var import_child_process = require("child_process");
-function $(command, cwd) {
-  return new Promise((resolve, reject) => {
-    (0, import_child_process.exec)(command, { cwd }, (error, stdout, stderr) => {
-      if (error) {
-        reject(error);
-      }
-      resolve({ stdout, stderr });
-    });
-  });
-}
+var $ = (0, import_util.promisify)(import_child_process.exec);
 
-// node_modules/.pnpm/@taskworld+platform-audit@3.0.0/node_modules/@taskworld/platform-audit/dist/dependency/pnpmAuditor.js
+// node_modules/.pnpm/@taskworld+platform-audit@3.0.1_audit-types@0.5.6/node_modules/@taskworld/platform-audit/dist/dependency/pnpmAuditor.js
 async function pnpmAuditor(options) {
   const level = options?.level ?? "low";
-  const { stdout } = await $(`pnpm audit --audit-level ${level} --prod --json`, options?.path);
+  const { stdout } = await $(`pnpm audit --audit-level ${level} --prod --json || true`, {
+    cwd: options?.path
+  });
   const report = JSON.parse(stdout);
   return report.metadata;
 }
 
-// node_modules/.pnpm/@taskworld+platform-audit@3.0.0/node_modules/@taskworld/platform-audit/dist/dependency/yarnAuditor.js
+// node_modules/.pnpm/@taskworld+platform-audit@3.0.1_audit-types@0.5.6/node_modules/@taskworld/platform-audit/dist/dependency/yarnAuditor.js
 function isYarnAuditSummary(arg) {
   return !!arg && typeof arg === "object" && "type" in arg && arg.type === "auditSummary" && "data" in arg && !!arg.data;
 }
 async function yarnAuditor(options) {
   const level = options?.level ?? "low";
-  const { stdout } = await $(`yarn audit --level ${level} --groups dependencies --json`, options?.path);
+  const { stdout } = await $(`yarn audit --level ${level} --groups dependencies --json`, {
+    cwd: options?.path
+  });
   const report = stdout.split(/\n|\n\r/).filter(Boolean).map((json) => JSON.parse(json)).find(({ type }) => type === "auditSummary");
   if (!isYarnAuditSummary(report)) {
     throw new Error("audit summary is not found");
@@ -19672,7 +19668,7 @@ async function yarnAuditor(options) {
   return report.data;
 }
 
-// node_modules/.pnpm/@taskworld+platform-audit@3.0.0/node_modules/@taskworld/platform-audit/dist/dependency/index.js
+// node_modules/.pnpm/@taskworld+platform-audit@3.0.1_audit-types@0.5.6/node_modules/@taskworld/platform-audit/dist/dependency/index.js
 var DEPENDENCY_AUDITORS = {
   pnpm: pnpmAuditor,
   yarn: yarnAuditor
@@ -19681,13 +19677,13 @@ async function auditDependencies(type, options) {
   return DEPENDENCY_AUDITORS[type](options);
 }
 
-// node_modules/.pnpm/@taskworld+platform-audit@3.0.0/node_modules/@taskworld/platform-audit/dist/dependency/types.js
+// node_modules/.pnpm/@taskworld+platform-audit@3.0.1_audit-types@0.5.6/node_modules/@taskworld/platform-audit/dist/dependency/types.js
 var SEVERITY_LEVELS = ["info", "low", "moderate", "high", "critical"];
 function isSeverityLevel(arg) {
   return SEVERITY_LEVELS.includes(arg);
 }
 
-// node_modules/.pnpm/@taskworld+platform-audit@3.0.0/node_modules/@taskworld/platform-audit/dist/license/auditLicenses.js
+// node_modules/.pnpm/@taskworld+platform-audit@3.0.1_audit-types@0.5.6/node_modules/@taskworld/platform-audit/dist/license/auditLicenses.js
 var import_license_checker = __toESM(require_lib4(), 1);
 
 // src/render.ts
