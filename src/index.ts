@@ -36,7 +36,7 @@ async function run() {
   core.info(`Report: ${JSON.stringify(report, null, 2)}`)
 
   if (!hasVulnerabilities(report)) {
-    core.setOutput('failed', true)
+    core.setOutput('failed', false)
     core.setOutput('vulnerabilities', noVulnerabilities(name))
     return
   }
