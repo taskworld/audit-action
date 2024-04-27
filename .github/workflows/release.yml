@@ -1,0 +1,32 @@
+name: Create release
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - master
+    types:
+      - closed
+
+jobs:
+  create_release:
+    name: releasing a new version
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: package.json has changed
+        run: git diff --name-only HEAD~1 HEAD | grep -q package.json
+
+      - name: new package.json version
+        id: version
+        run: |
+          version=$(cat package.json | jq -er '.version')
+          echo "result=${version}" >> $GITHUB_OUTPUT
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ format('v{0}', steps.version.outputs.result) }}
