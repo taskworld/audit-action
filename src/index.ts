@@ -36,13 +36,15 @@ async function run() {
   core.info(`Report: ${JSON.stringify(report, null, 2)}`)
 
   if (!hasVulnerabilities(report)) {
-    core.setOutput('failed', false)
     core.setOutput('vulnerabilities', noVulnerabilities(name))
     return
   }
 
   core.setOutput('vulnerabilities', someVulnerabilities(name, report.vulnerabilities))
-  core.setOutput('failed', hasVulnerabilities(report, fail))
+
+  if (hasVulnerabilities(report, fail)) {
+    core.setFailed('The audit concluded that vulnerabilities were too critical to be allowed.')
+  }
 }
 
 // bootstrap
