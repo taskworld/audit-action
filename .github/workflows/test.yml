@@ -47,7 +47,7 @@ jobs:
           package-name: audit-action
           package-manager: pnpm
 
-      - if: steps.audit.conclusion == 'success'
+      - if: ${{ !cancelled() }}
         name: Add audit report to PR
         uses: marocchino/sticky-pull-request-comment@v2.9.0
         with:
