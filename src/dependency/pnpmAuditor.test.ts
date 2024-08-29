@@ -4,14 +4,19 @@ import { describe, expect, it, vi } from 'vitest'
 
 import { pnpmAuditor } from './pnpmAuditor.js'
 
+let output = {}
+
 vi.mock('../utils.js', () => ({
-  $: vi.fn(async () => ({
-    stdout: readFileSync(resolve(__dirname, './pnpmAuditor.fixture.json'), 'utf8'),
-  })),
+  $: vi.fn(async () => output),
 }))
 
 describe('pnpmAuditor', () => {
   it('performs audit with PNPM', async () => {
+    output = {
+      stdout: readFileSync(resolve(__dirname, './pnpmAuditor.fixture.json'), 'utf8'),
+      stderr: '',
+    }
+
     const report = await pnpmAuditor()
 
     expect(report).toEqual({
@@ -21,5 +26,13 @@ describe('pnpmAuditor', () => {
       optionalDependencies: 0,
       totalDependencies: 302,
     })
+  })
+
+  it('performs audit with PNPM', async () => {
+    output = {
+      stderr: '!',
+    }
+
+    await expect(pnpmAuditor()).rejects.toThrow(/pnpm audit failed/)
   })
 })
