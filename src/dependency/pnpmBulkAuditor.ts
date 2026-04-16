@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs'
+
 import type { PNPMAuditReport, Severity } from 'audit-types'
 
 import { $ } from '../utils.js'
@@ -6,18 +8,9 @@ import type { DependencyAuditOptions } from './types.js'
 
 const BULK_ENDPOINT = 'https://registry.npmjs.org/-/npm/v1/security/advisories/bulk'
 const REQUEST_TIMEOUT_MS = 10_000
-const MAX_BUFFER = 50 * 1024 * 1024
+const MAX_BUFFER = 20 * 1024 * 1024
 
-// -- Types for pnpm list output --
-
-interface PnpmListEntry {
-  dependencies?: Record<string, PnpmDepNode>
-}
-
-interface PnpmDepNode {
-  version: string
-  dependencies?: Record<string, PnpmDepNode>
-}
+type DependencyMap = Map<string, Set<string>>
 
 // -- Types for bulk advisory response --
 
@@ -32,28 +25,37 @@ type BulkAdvisoryResponse = Record<string, BulkAdvisory[]>
 // ---------------------------------------------------------------------------
 // Phase A: Collect all transitive production dependencies via pnpm list
 // ---------------------------------------------------------------------------
+// Uses --parseable to get flat file paths instead of --json which produces
+// a massive recursive tree with duplicated subtrees for large monorepos.
+// Reads each package's package.json for reliable name+version.
 
-export function buildDependencyMap(projects: PnpmListEntry[]): Record<string, string[]> {
-  const deps: Record<string, string[]> = {}
-  const seen = new Set<string>()
+export function buildDependencyMap(parseableOutput: string): DependencyMap {
+  const deps: DependencyMap = new Map()
 
-  function walk(tree: Record<string, PnpmDepNode> | undefined) {
-    for (const [name, info] of Object.entries(tree ?? {})) {
-      const key = `${name}@${info.version}`
-      if (seen.has(key)) continue
-      seen.add(key)
-      if (!deps[name]) deps[name] = []
-      if (!deps[name].includes(info.version)) deps[name].push(info.version)
-      walk(info.dependencies)
+  for (const line of parseableOutput.split('\n')) {
+    if (!line.includes('/node_modules/')) continue
+
+    let pkg: { name?: string; version?: string }
+    try {
+      pkg = JSON.parse(readFileSync(line + '/package.json', 'utf8'))
+    } catch {
+      continue
     }
+    if (!pkg.name || !pkg.version) continue
+
+    let versions = deps.get(pkg.name)
+    if (!versions) {
+      versions = new Set()
+      deps.set(pkg.name, versions)
+    }
+    versions.add(pkg.version)
   }
 
-  for (const project of projects) walk(project.dependencies)
   return deps
 }
 
-async function collectDependencies(cwd?: string): Promise<Record<string, string[]>> {
-  const { stdout, stderr } = await $('pnpm list --prod --json --depth=Infinity || true', {
+async function collectDependencies(cwd?: string): Promise<DependencyMap> {
+  const { stdout, stderr } = await $('pnpm list --prod --parseable --depth=Infinity || true', {
     cwd,
     maxBuffer: MAX_BUFFER,
   })
@@ -62,19 +64,26 @@ async function collectDependencies(cwd?: string): Promise<Record<string, string[
     throw new Error(`pnpm list failed (${stderr})`)
   }
 
-  const projects: PnpmListEntry[] = JSON.parse(stdout)
-  return buildDependencyMap(projects)
+  return buildDependencyMap(stdout)
 }
 
 // ---------------------------------------------------------------------------
 // Phase B: POST to the bulk advisory endpoint
 // ---------------------------------------------------------------------------
 
-async function fetchAdvisories(deps: Record<string, string[]>): Promise<BulkAdvisoryResponse> {
+function depsToPayload(deps: DependencyMap): Record<string, string[]> {
+  const payload: Record<string, string[]> = {}
+  for (const [name, versions] of deps) {
+    payload[name] = [...versions]
+  }
+  return payload
+}
+
+async function fetchAdvisories(deps: DependencyMap): Promise<BulkAdvisoryResponse> {
   const res = await fetch(BULK_ENDPOINT, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(deps),
+    body: JSON.stringify(depsToPayload(deps)),
     signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
   })
 
@@ -93,7 +102,7 @@ async function fetchAdvisories(deps: Record<string, string[]>): Promise<BulkAdvi
 const SEVERITY_KEYS: Severity[] = ['info', 'low', 'moderate', 'high', 'critical']
 
 export function mapToAuditMetadata(
-  deps: Record<string, string[]>,
+  deps: DependencyMap,
   advisories: BulkAdvisoryResponse,
 ): PNPMAuditReport.AuditMetadata {
   const vulnerabilities: Record<Severity, number> = { info: 0, low: 0, moderate: 0, high: 0, critical: 0 }
@@ -106,7 +115,7 @@ export function mapToAuditMetadata(
     }
   }
 
-  const totalDependencies = Object.keys(deps).length
+  const totalDependencies = deps.size
 
   return {
     vulnerabilities,
