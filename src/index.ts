@@ -36,26 +36,22 @@ async function run() {
   core.info(`Report: ${JSON.stringify(report, null, 2)}`)
 
   if (!hasVulnerabilities(report)) {
+    core.setOutput('failed', 'false')
     core.setOutput('vulnerabilities', noVulnerabilities(name))
     return
   }
 
   core.setOutput('vulnerabilities', someVulnerabilities(name, report.vulnerabilities))
-
-  if (hasVulnerabilities(report, fail)) {
-    core.setFailed('The audit concluded that vulnerabilities were too critical to be allowed.')
-  }
+  core.setOutput('failed', String(hasVulnerabilities(report, fail)))
 }
 
 // bootstrap
 if (context.eventName === 'pull_request') {
-  try {
-    run()
-  } catch (error) {
+  run().catch((error) => {
     if (typeof error === 'string' || error instanceof Error) {
       core.setFailed(error)
     } else {
       console.error(error)
     }
-  }
+  })
 }

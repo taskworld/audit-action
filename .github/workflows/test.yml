@@ -47,6 +47,13 @@ jobs:
           package-name: audit-action
           package-manager: pnpm
 
+      - name: Verify outputs are set
+        run: |
+          echo "failed=${{ steps.audit.outputs.failed }}"
+          echo "vulnerabilities=${{ steps.audit.outputs.vulnerabilities }}"
+          test -n "${{ steps.audit.outputs.failed }}"
+          test -n "${{ steps.audit.outputs.vulnerabilities }}"
+
       - if: ${{ !cancelled() }}
         name: Add audit report to PR
         uses: marocchino/sticky-pull-request-comment@v3
