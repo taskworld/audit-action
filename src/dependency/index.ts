@@ -1,10 +1,10 @@
 import type { DependencyAuditOptions } from './types.js'
 
-import { pnpmAuditor } from './pnpmAuditor.js'
+import { pnpmBulkAuditor } from './pnpmBulkAuditor.js'
 import { yarnAuditor } from './yarnAuditor.js'
 
 const DEPENDENCY_AUDITORS = {
-  pnpm: pnpmAuditor,
+  pnpm: pnpmBulkAuditor,
   yarn: yarnAuditor,
 }
 
