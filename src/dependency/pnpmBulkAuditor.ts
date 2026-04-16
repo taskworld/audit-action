@@ -53,7 +53,7 @@ export function buildDependencyMap(projects: PnpmListEntry[]): Record<string, st
 }
 
 async function collectDependencies(cwd?: string): Promise<Record<string, string[]>> {
-  const { stdout, stderr } = await $('pnpm list --prod --json --depth=Infinity', {
+  const { stdout, stderr } = await $('pnpm list --prod --json --depth=Infinity || true', {
     cwd,
     maxBuffer: MAX_BUFFER,
   })
