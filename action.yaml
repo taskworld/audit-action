@@ -12,6 +12,11 @@ inputs:
     default: 'pnpm'
   path:
     description: 'Target path for the audit'
+outputs:
+  vulnerabilities:
+    description: 'Rendered vulnerability report (markdown)'
+  failed:
+    description: 'Set to true when vulnerabilities exceed failure-level'
 runs:
   using: 'node24'
   main: 'dist/index.js'
