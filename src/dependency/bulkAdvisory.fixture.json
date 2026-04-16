@@ -1,0 +1,27 @@
+{
+  "axios": [
+    {
+      "id": 1081813,
+      "severity": "high",
+      "vulnerable_versions": "<0.21.2",
+      "title": "Inefficient Regular Expression Complexity in axios",
+      "url": "https://github.com/advisories/GHSA-cph5-m8f7-6c5x"
+    }
+  ],
+  "lodash": [
+    {
+      "id": 1085000,
+      "severity": "critical",
+      "vulnerable_versions": "<4.17.21",
+      "title": "Prototype Pollution in lodash",
+      "url": "https://github.com/advisories/GHSA-xxxx-xxxx-xxxx"
+    },
+    {
+      "id": 1085001,
+      "severity": "moderate",
+      "vulnerable_versions": "<4.17.21",
+      "title": "Regular Expression Denial of Service in lodash",
+      "url": "https://github.com/advisories/GHSA-yyyy-yyyy-yyyy"
+    }
+  ]
+}
