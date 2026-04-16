@@ -13,5 +13,5 @@ inputs:
   path:
     description: 'Target path for the audit'
 runs:
-  using: 'node22'
+  using: 'node24'
   main: 'dist/index.js'
