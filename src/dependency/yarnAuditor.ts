@@ -22,8 +22,9 @@ function isYarnAuditSummary(arg: unknown): arg is YarnAuditReport {
 
 export async function yarnAuditor(options?: DependencyAuditOptions) {
   const level = options?.level ?? 'low'
+  const scope = options?.includeDevDeps ? '' : '--groups dependencies'
 
-  const { stdout } = await $(`yarn audit --level ${level} --groups dependencies --json`, {
+  const { stdout } = await $(`yarn audit --level ${level} ${scope} --json`, {
     cwd: options?.path,
   })
 

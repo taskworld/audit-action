@@ -6,8 +6,9 @@ import type { DependencyAuditOptions } from './types.js'
 
 export async function pnpmAuditor(options?: DependencyAuditOptions) {
   const level = options?.level ?? 'low'
+  const scope = options?.includeDevDeps ? '' : '--prod'
 
-  const { stdout, stderr } = await $(`pnpm audit --audit-level ${level} --prod --json || true`, {
+  const { stdout, stderr } = await $(`pnpm audit --audit-level ${level} ${scope} --json || true`, {
     cwd: options?.path,
   })
 
