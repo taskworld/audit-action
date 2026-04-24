@@ -54,8 +54,9 @@ export function buildDependencyMap(parseableOutput: string): DependencyMap {
   return deps
 }
 
-async function collectDependencies(cwd?: string): Promise<DependencyMap> {
-  const { stdout, stderr } = await $('pnpm list --prod --parseable --depth=Infinity || true', {
+async function collectDependencies(cwd?: string, includeDevDeps = false): Promise<DependencyMap> {
+  const scope = includeDevDeps ? '' : '--prod'
+  const { stdout, stderr } = await $(`pnpm list ${scope} --parseable --depth=Infinity || true`, {
     cwd,
     maxBuffer: MAX_BUFFER,
   })
@@ -131,7 +132,7 @@ export function mapToAuditMetadata(
 // ---------------------------------------------------------------------------
 
 export async function pnpmBulkAuditor(options?: DependencyAuditOptions) {
-  const deps = await collectDependencies(options?.path)
+  const deps = await collectDependencies(options?.path, options?.includeDevDeps)
   const advisories = await fetchAdvisories(deps)
   return mapToAuditMetadata(deps, advisories)
 }

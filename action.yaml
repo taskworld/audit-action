@@ -12,6 +12,9 @@ inputs:
     default: 'pnpm'
   path:
     description: 'Target path for the audit'
+  include-dev-deps:
+    description: 'Include devDependencies in the audit'
+    default: 'false'
 outputs:
   vulnerabilities:
     description: 'Rendered vulnerability report (markdown)'

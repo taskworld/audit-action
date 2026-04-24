@@ -19,6 +19,7 @@ async function run() {
   const fail = core.getInput('failure-level') || 'low'
   const name = core.getInput('package-name') || context.repo.repo
   const pm = core.getInput('package-manager')
+  const includeDevDeps = core.getInput('include-dev-deps').toLowerCase() === 'true'
 
   if (!isSeverityLevel(fail)) {
     throw new Error(`failure-level should be one of [${SEVERITY_LEVELS.join(', ')}]`)
@@ -31,6 +32,7 @@ async function run() {
   const report = await auditDependencies(pm, {
     level: 'moderate',
     path: core.getInput('path') || process.env.GITHUB_WORKSPACE!,
+    includeDevDeps,
   })
 
   core.info(`Report: ${JSON.stringify(report, null, 2)}`)
