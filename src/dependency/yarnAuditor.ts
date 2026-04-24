@@ -20,6 +20,8 @@ function isYarnAuditSummary(arg: unknown): arg is YarnAuditReport {
   )
 }
 
+// yarn's auditSummary event exposes only severity counts; per-package details
+// are out of scope here, so `options.detailed` is accepted but ignored.
 export async function yarnAuditor(options?: DependencyAuditOptions) {
   const level = options?.level ?? 'low'
   const scope = options?.includeDevDeps ? '' : '--groups dependencies'
