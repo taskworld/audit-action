@@ -49,13 +49,18 @@ const FAKE_PACKAGES: Record<string, { name: string; version: string }> = {
   '/app/node_modules/lodash': { name: 'lodash', version: '4.17.20' },
 }
 
+let rootPackageJson: object | null = null
+
 // Mock node:fs readFileSync used by buildDependencyMap to read package.json files.
 vi.mock('node:fs', () => ({
   readFileSync: vi.fn((path: string) => {
     const dir = path.replace(/\/package\.json$/, '')
     const pkg = FAKE_PACKAGES[dir]
-    if (!pkg) throw new Error(`ENOENT: ${path}`)
-    return JSON.stringify(pkg)
+    if (pkg) return JSON.stringify(pkg)
+    if (rootPackageJson && path.endsWith('/package.json')) {
+      return JSON.stringify(rootPackageJson)
+    }
+    throw new Error(`ENOENT: ${path}`)
   }),
 }))
 
@@ -148,6 +153,66 @@ describe('mapToAuditMetadata', () => {
       critical: 0,
     })
   })
+
+  describe('detailed mode', () => {
+    it('assigns direct/indirect flags based on directSet', () => {
+      const deps = new Map([
+        ['axios', new Set(['0.21.1'])],
+        ['lodash', new Set(['4.17.20'])],
+      ])
+      const directSet = new Set(['axios'])
+
+      const metadata = mapToAuditMetadata(deps, bulkAdvisoryFixture, directSet)
+
+      expect(metadata.details?.high).toEqual([{ name: 'axios', version: '0.21.1', direct: true }])
+      expect(metadata.details?.critical).toEqual([{ name: 'lodash', version: '4.17.20', direct: false }])
+      expect(metadata.details?.moderate).toEqual([{ name: 'lodash', version: '4.17.20', direct: false }])
+    })
+
+    it('deduplicates when a package has multiple advisories of the same severity', () => {
+      const deps = new Map([['lodash', new Set(['4.17.20'])]])
+      const advisories = {
+        lodash: [
+          { severity: 'critical', vulnerable_versions: '<4.17.21', title: 'A' },
+          { severity: 'critical', vulnerable_versions: '<4.17.22', title: 'B' },
+        ],
+      }
+
+      const metadata = mapToAuditMetadata(deps, advisories, new Set())
+
+      expect(metadata.details?.critical).toEqual([{ name: 'lodash', version: '4.17.20', direct: false }])
+      expect(metadata.vulnerabilities.critical).toBe(2)
+    })
+
+    it('filters out advisories whose vulnerable_versions do not match any installed version', () => {
+      const deps = new Map([['axios', new Set(['1.5.0'])]])
+      const advisories = {
+        axios: [{ severity: 'high', vulnerable_versions: '<0.21.2', title: 'old only' }],
+      }
+
+      const metadata = mapToAuditMetadata(deps, advisories, new Set(['axios']))
+
+      expect(metadata.details?.high).toBeUndefined()
+      expect(metadata.vulnerabilities.high).toBe(0)
+    })
+
+    it('includes multiple installed versions when all match', () => {
+      const deps = new Map([['lodash', new Set(['4.17.20', '4.17.19'])]])
+      const advisories = {
+        lodash: [{ severity: 'critical', vulnerable_versions: '<4.17.21', title: 'A' }],
+      }
+
+      const metadata = mapToAuditMetadata(deps, advisories, new Set())
+
+      expect(metadata.details?.critical).toEqual(
+        expect.arrayContaining([
+          { name: 'lodash', version: '4.17.20', direct: false },
+          { name: 'lodash', version: '4.17.19', direct: false },
+        ]),
+      )
+      expect(metadata.details?.critical).toHaveLength(2)
+    })
+  })
 })
 
 describe('pnpmBulkAuditor', () => {
@@ -202,5 +267,31 @@ describe('pnpmBulkAuditor', () => {
     })
 
     await expect(pnpmBulkAuditor()).rejects.toThrow(/Registry returned 503/)
+  })
+
+  it('produces a detailed report with direct/indirect flags when options.detailed is true', async () => {
+    execOutput = { stdout: parseableFixture, stderr: '' }
+    fetchMock.mockResolvedValueOnce({
+      ok: true,
+      json: async () => bulkAdvisoryFixture,
+    })
+    rootPackageJson = { dependencies: { axios: '^0.21', express: '^4' } }
+
+    try {
+      const report = await pnpmBulkAuditor({ path: '/app', detailed: true })
+
+      expect(report.details?.high).toEqual([{ name: 'axios', version: '0.21.1', direct: true }])
+      expect(report.details?.critical).toEqual([{ name: 'lodash', version: '4.17.20', direct: false }])
+      expect(report.details?.moderate).toEqual([{ name: 'lodash', version: '4.17.20', direct: false }])
+      expect(report.vulnerabilities).toEqual({
+        info: 0,
+        low: 0,
+        moderate: 1,
+        high: 1,
+        critical: 1,
+      })
+    } finally {
+      rootPackageJson = null
+    }
   })
 })

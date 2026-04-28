@@ -43,9 +43,10 @@ jobs:
         uses: ./
         id: audit
         with:
-          failure-level: 'high'
-          package-name: audit-action
+          failure-level: high
+          detailed-report: 'true'
           package-manager: pnpm
+          package-name: audit-action
 
       - name: Verify outputs are set
         run: |

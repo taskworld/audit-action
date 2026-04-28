@@ -15,6 +15,9 @@ inputs:
   include-dev-deps:
     description: 'Include devDependencies in the audit'
     default: 'false'
+  detailed-report:
+    description: 'Include a 3rd column listing affected packages per severity'
+    default: 'false'
 outputs:
   vulnerabilities:
     description: 'Rendered vulnerability report (markdown)'

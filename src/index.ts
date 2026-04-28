@@ -20,6 +20,7 @@ async function run() {
   const name = core.getInput('package-name') || context.repo.repo
   const pm = core.getInput('package-manager')
   const includeDevDeps = core.getInput('include-dev-deps').toLowerCase() === 'true'
+  const detailed = core.getInput('detailed-report').toLowerCase() === 'true'
 
   if (!isSeverityLevel(fail)) {
     throw new Error(`failure-level should be one of [${SEVERITY_LEVELS.join(', ')}]`)
@@ -33,6 +34,7 @@ async function run() {
     level: 'moderate',
     path: core.getInput('path') || process.env.GITHUB_WORKSPACE!,
     includeDevDeps,
+    detailed,
   })
 
   core.info(`Report: ${JSON.stringify(report, null, 2)}`)
@@ -43,7 +45,7 @@ async function run() {
     return
   }
 
-  core.setOutput('vulnerabilities', someVulnerabilities(name, report.vulnerabilities))
+  core.setOutput('vulnerabilities', someVulnerabilities(name, report))
   core.setOutput('failed', String(hasVulnerabilities(report, fail)))
 }
 
