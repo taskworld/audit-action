@@ -2,15 +2,52 @@ import { describe, expect, it, vi } from 'vitest'
 
 // -- Inline fixtures --
 
-const parseableFixture = [
-  '/app',
-  '/app/node_modules/express',
-  '/app/node_modules/express/node_modules/body-parser',
-  '/app/node_modules/express/node_modules/body-parser/node_modules/bytes',
-  '/app/node_modules/express/node_modules/cookie',
-  '/app/node_modules/axios',
-  '/app/node_modules/lodash',
-].join('\n')
+// A minimal pnpm-lock.yaml (v9) whose production closure is:
+// express -> body-parser -> bytes, express -> cookie, plus axios and lodash.
+const lockfileYaml = `
+lockfileVersion: '9.0'
+
+importers:
+
+  .:
+    dependencies:
+      express:
+        specifier: ^4.17.1
+        version: 4.17.1
+      axios:
+        specifier: ^0.21.1
+        version: 0.21.1
+      lodash:
+        specifier: ^4.17.20
+        version: 4.17.20
+    devDependencies:
+      vitest:
+        specifier: ^4.0.0
+        version: 4.0.0
+
+snapshots:
+
+  express@4.17.1:
+    dependencies:
+      body-parser: 1.19.0
+      cookie: 0.4.1
+
+  body-parser@1.19.0:
+    dependencies:
+      bytes: 3.1.0
+
+  cookie@0.4.1: {}
+
+  bytes@3.1.0: {}
+
+  axios@0.21.1: {}
+
+  lodash@4.17.20: {}
+
+  vitest@4.0.0:
+    dependencies:
+      lodash: 4.17.21
+`
 
 const bulkAdvisoryFixture = {
   axios: [
@@ -40,65 +77,121 @@ const bulkAdvisoryFixture = {
   ],
 }
 
-const FAKE_PACKAGES: Record<string, { name: string; version: string }> = {
-  '/app/node_modules/express': { name: 'express', version: '4.17.1' },
-  '/app/node_modules/express/node_modules/body-parser': { name: 'body-parser', version: '1.19.0' },
-  '/app/node_modules/express/node_modules/body-parser/node_modules/bytes': { name: 'bytes', version: '3.1.0' },
-  '/app/node_modules/express/node_modules/cookie': { name: 'cookie', version: '0.4.1' },
-  '/app/node_modules/axios': { name: 'axios', version: '0.21.1' },
-  '/app/node_modules/lodash': { name: 'lodash', version: '4.17.20' },
-}
-
 let rootPackageJson: object | null = null
+let lockfileExists = true
 
-// Mock node:fs readFileSync used by buildDependencyMap to read package.json files.
+// Mock node:fs: findLockfile probes existsSync, then readFileSync loads the
+// lockfile and (in detailed mode) the project package.json.
 vi.mock('node:fs', () => ({
+  existsSync: vi.fn((path: string) => lockfileExists && path.endsWith('pnpm-lock.yaml')),
   readFileSync: vi.fn((path: string) => {
-    const dir = path.replace(/\/package\.json$/, '')
-    const pkg = FAKE_PACKAGES[dir]
-    if (pkg) return JSON.stringify(pkg)
-    if (rootPackageJson && path.endsWith('/package.json')) {
-      return JSON.stringify(rootPackageJson)
-    }
+    if (path.endsWith('pnpm-lock.yaml')) return lockfileYaml
+    if (rootPackageJson && path.endsWith('package.json')) return JSON.stringify(rootPackageJson)
     throw new Error(`ENOENT: ${path}`)
   }),
 }))
 
-import { buildDependencyMap, mapToAuditMetadata, pnpmBulkAuditor } from './pnpmBulkAuditor.js'
-
-let execOutput: { stdout?: string; stderr?: string } = {}
-
-vi.mock('../utils.js', () => ({
-  $: vi.fn(async () => execOutput),
-}))
+import {
+  collectFromLockfile,
+  mapToAuditMetadata,
+  pnpmBulkAuditor,
+  toImporterKey,
+} from './pnpmBulkAuditor.js'
 
 const fetchMock = vi.fn()
 vi.stubGlobal('fetch', fetchMock)
 
-describe('buildDependencyMap', () => {
-  it('parses parseable output and collects unique packages', () => {
-    const deps = buildDependencyMap(parseableFixture)
+describe('toImporterKey', () => {
+  it('returns "." when the target is the lockfile directory', () => {
+    expect(toImporterKey('/repo', '/repo')).toBe('.')
+  })
 
-    expect([...deps.keys()].sort()).toEqual(['axios', 'body-parser', 'bytes', 'cookie', 'express', 'lodash'])
-    expect(deps.get('express')).toEqual(new Set(['4.17.1']))
-    expect(deps.get('body-parser')).toEqual(new Set(['1.19.0']))
+  it('returns a POSIX-relative path for workspace members', () => {
+    expect(toImporterKey('/repo', '/repo/client')).toBe('client')
+    expect(toImporterKey('/repo', '/repo/packages/api')).toBe('packages/api')
+  })
+})
+
+describe('collectFromLockfile', () => {
+  const lockfile = {
+    importers: {
+      '.': {
+        dependencies: {
+          express: { specifier: '^4.17.1', version: '4.17.1' },
+          axios: { specifier: '^0.21.1', version: '0.21.1' },
+          lodash: { specifier: '^4.17.20', version: '4.17.20' },
+        },
+        devDependencies: {
+          vitest: { specifier: '^4.0.0', version: '4.0.0' },
+        },
+      },
+    },
+    snapshots: {
+      'express@4.17.1': { dependencies: { 'body-parser': '1.19.0', cookie: '0.4.1' } },
+      'body-parser@1.19.0': { dependencies: { bytes: '3.1.0' } },
+      'cookie@0.4.1': {},
+      'bytes@3.1.0': {},
+      'axios@0.21.1': {},
+      'lodash@4.17.20': {},
+      'vitest@4.0.0': { dependencies: { lodash: '4.17.21' } },
+    },
+  }
+
+  it('walks the production closure transitively', () => {
+    const deps = collectFromLockfile(lockfile, '.', false)
+
+    expect([...deps.keys()].sort()).toEqual([
+      'axios',
+      'body-parser',
+      'bytes',
+      'cookie',
+      'express',
+      'lodash',
+    ])
     expect(deps.get('bytes')).toEqual(new Set(['3.1.0']))
   })
 
-  it('returns empty map for empty output', () => {
-    expect(buildDependencyMap('')).toEqual(new Map())
+  it('excludes devDependencies and their subtree by default', () => {
+    const deps = collectFromLockfile(lockfile, '.', false)
+
+    expect(deps.has('vitest')).toBe(false)
+    // lodash@4.17.21 is only reachable through the dev-only vitest snapshot.
+    expect(deps.get('lodash')).toEqual(new Set(['4.17.20']))
   })
 
-  it('skips lines without node_modules', () => {
-    const deps = buildDependencyMap('/app\n/app/node_modules/express\n')
-    expect(deps.size).toBe(1)
-    expect(deps.has('express')).toBe(true)
+  it('includes devDependencies (and their subtree) when requested', () => {
+    const deps = collectFromLockfile(lockfile, '.', true)
+
+    expect(deps.has('vitest')).toBe(true)
+    expect(deps.get('lodash')).toEqual(new Set(['4.17.20', '4.17.21']))
   })
 
-  it('deduplicates same package appearing at multiple paths', () => {
-    const input = ['/app/node_modules/express', '/app/other/node_modules/express'].join('\n')
-    const deps = buildDependencyMap(input)
-    expect(deps.get('express')).toEqual(new Set(['4.17.1']))
+  it('strips peer/patch suffixes from snapshot versions', () => {
+    const withSuffix = {
+      importers: {
+        '.': { dependencies: { foo: { specifier: '^1', version: '1.2.3(react@18.3.1)' } } },
+      },
+      snapshots: { 'foo@1.2.3(react@18.3.1)': {} },
+    }
+    const deps = collectFromLockfile(withSuffix, '.', false)
+    expect(deps.get('foo')).toEqual(new Set(['1.2.3']))
+  })
+
+  it('skips workspace link / file references', () => {
+    const withLink = {
+      importers: {
+        '.': { dependencies: { '@repo/ui': { specifier: 'workspace:*', version: 'link:../ui' } } },
+      },
+      snapshots: {},
+    }
+    const deps = collectFromLockfile(withLink, '.', false)
+    expect(deps.size).toBe(0)
+  })
+
+  it('throws when the importer key is missing', () => {
+    expect(() => collectFromLockfile(lockfile, 'client', false)).toThrow(
+      /Importer 'client' not found/,
+    )
   })
 })
 
@@ -165,8 +258,12 @@ describe('mapToAuditMetadata', () => {
       const metadata = mapToAuditMetadata(deps, bulkAdvisoryFixture, directSet)
 
       expect(metadata.details?.high).toEqual([{ name: 'axios', version: '0.21.1', direct: true }])
-      expect(metadata.details?.critical).toEqual([{ name: 'lodash', version: '4.17.20', direct: false }])
-      expect(metadata.details?.moderate).toEqual([{ name: 'lodash', version: '4.17.20', direct: false }])
+      expect(metadata.details?.critical).toEqual([
+        { name: 'lodash', version: '4.17.20', direct: false },
+      ])
+      expect(metadata.details?.moderate).toEqual([
+        { name: 'lodash', version: '4.17.20', direct: false },
+      ])
     })
 
     it('deduplicates when a package has multiple advisories of the same severity', () => {
@@ -180,7 +277,9 @@ describe('mapToAuditMetadata', () => {
 
       const metadata = mapToAuditMetadata(deps, advisories, new Set())
 
-      expect(metadata.details?.critical).toEqual([{ name: 'lodash', version: '4.17.20', direct: false }])
+      expect(metadata.details?.critical).toEqual([
+        { name: 'lodash', version: '4.17.20', direct: false },
+      ])
       expect(metadata.vulnerabilities.critical).toBe(2)
     })
 
@@ -216,8 +315,8 @@ describe('mapToAuditMetadata', () => {
 })
 
 describe('pnpmBulkAuditor', () => {
-  it('collects deps and fetches advisories end-to-end', async () => {
-    execOutput = { stdout: parseableFixture, stderr: '' }
+  it('collects the prod closure from the lockfile and fetches advisories end-to-end', async () => {
+    lockfileExists = true
     fetchMock.mockResolvedValueOnce({
       ok: true,
       json: async () => bulkAdvisoryFixture,
@@ -235,7 +334,7 @@ describe('pnpmBulkAuditor', () => {
   })
 
   it('returns zero vulnerabilities when registry has no advisories', async () => {
-    execOutput = { stdout: parseableFixture, stderr: '' }
+    lockfileExists = true
     fetchMock.mockResolvedValueOnce({
       ok: true,
       json: async () => ({}),
@@ -252,14 +351,17 @@ describe('pnpmBulkAuditor', () => {
     })
   })
 
-  it('throws when pnpm list fails', async () => {
-    execOutput = { stdout: '', stderr: 'ERR_PNPM_NO_MATCHING_VERSION' }
-
-    await expect(pnpmBulkAuditor()).rejects.toThrow(/pnpm list failed/)
+  it('throws when no lockfile can be found', async () => {
+    lockfileExists = false
+    try {
+      await expect(pnpmBulkAuditor()).rejects.toThrow(/Could not find pnpm-lock\.yaml/)
+    } finally {
+      lockfileExists = true
+    }
   })
 
-  it('throws when registry returns non-200', async () => {
-    execOutput = { stdout: parseableFixture, stderr: '' }
+  it('throws when the registry returns non-200', async () => {
+    lockfileExists = true
     fetchMock.mockResolvedValueOnce({
       ok: false,
       status: 503,
@@ -270,7 +372,7 @@ describe('pnpmBulkAuditor', () => {
   })
 
   it('produces a detailed report with direct/indirect flags when options.detailed is true', async () => {
-    execOutput = { stdout: parseableFixture, stderr: '' }
+    lockfileExists = true
     fetchMock.mockResolvedValueOnce({
       ok: true,
       json: async () => bulkAdvisoryFixture,
@@ -281,8 +383,12 @@ describe('pnpmBulkAuditor', () => {
       const report = await pnpmBulkAuditor({ path: '/app', detailed: true })
 
       expect(report.details?.high).toEqual([{ name: 'axios', version: '0.21.1', direct: true }])
-      expect(report.details?.critical).toEqual([{ name: 'lodash', version: '4.17.20', direct: false }])
-      expect(report.details?.moderate).toEqual([{ name: 'lodash', version: '4.17.20', direct: false }])
+      expect(report.details?.critical).toEqual([
+        { name: 'lodash', version: '4.17.20', direct: false },
+      ])
+      expect(report.details?.moderate).toEqual([
+        { name: 'lodash', version: '4.17.20', direct: false },
+      ])
       expect(report.vulnerabilities).toEqual({
         info: 0,
         low: 0,
