@@ -12,21 +12,28 @@ jobs:
   create_release:
     name: releasing a new version
     runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
 
     steps:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 2
 
-      - name: package.json has changed
-        run: git diff --name-only HEAD~1 HEAD | grep -q package.json
+      - name: check package.json version changed
+        id: check
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || git diff --name-only HEAD~1 HEAD | grep -q '^package.json$'; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: new package.json version
+        if: steps.check.outputs.changed == 'true'
         id: version
-        run: |
-          version=$(cat package.json | jq -er '.version')
-          echo "result=${version}" >> $GITHUB_OUTPUT
+        run: echo "result=$(jq -er '.version' package.json)" >> "$GITHUB_OUTPUT"
 
       - uses: softprops/action-gh-release@v3
+        if: steps.check.outputs.changed == 'true'
         with:
           tag_name: ${{ format('v{0}', steps.version.outputs.result) }}
