@@ -3,6 +3,7 @@
   "version": "3.2.0",
   "private": true,
   "main": "dist/index.js",
+  "packageManager": "pnpm@10.33.0",
   "scripts": {
     "test": "vitest run",
     "build": "esbuild src/index.ts --bundle --platform=node --target=node22 --minify --outfile=dist/index.js"
@@ -12,7 +13,8 @@
     "@actions/core": "^3.0.0",
     "@actions/github": "^9.1.0",
     "license-checker": "^25.0.1",
-    "semver": "^7.7.4"
+    "semver": "^7.7.4",
+    "yaml": "^2.6.0"
   },
   "devDependencies": {
     "@types/license-checker": "^25.0.6",
