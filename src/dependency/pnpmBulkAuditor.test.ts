@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 // -- Inline fixtures --
 
@@ -315,6 +315,10 @@ describe('mapToAuditMetadata', () => {
 })
 
 describe('pnpmBulkAuditor', () => {
+  beforeEach(() => {
+    fetchMock.mockReset()
+  })
+
   it('collects the prod closure from the lockfile and fetches advisories end-to-end', async () => {
     lockfileExists = true
     fetchMock.mockResolvedValueOnce({
@@ -358,17 +362,6 @@ describe('pnpmBulkAuditor', () => {
     } finally {
       lockfileExists = true
     }
-  })
-
-  it('throws when the registry returns non-200', async () => {
-    lockfileExists = true
-    fetchMock.mockResolvedValueOnce({
-      ok: false,
-      status: 503,
-      text: async () => 'Service Unavailable',
-    })
-
-    await expect(pnpmBulkAuditor()).rejects.toThrow(/Registry returned 503/)
   })
 
   it('produces a detailed report with direct/indirect flags when options.detailed is true', async () => {

@@ -5,10 +5,11 @@ import type { Severity } from 'audit-types'
 import semver from 'semver'
 import { parse as parseYaml } from 'yaml'
 
+import type { BulkAdvisoryResponse } from './registryClient.js'
 import type { DependencyAuditOptions, DependencyAuditReport, VulnerablePackage } from './types.js'
 
-const BULK_ENDPOINT = 'https://registry.npmjs.org/-/npm/v1/security/advisories/bulk'
-const REQUEST_TIMEOUT_MS = 10_000
+import { fetchBulkAdvisories } from './registryClient.js'
+
 const LOCKFILE_NAME = 'pnpm-lock.yaml'
 
 type DependencyMap = Map<string, Set<string>>
@@ -35,16 +36,6 @@ interface Lockfile {
   importers?: Record<string, LockfileImporter>
   snapshots?: Record<string, LockfileSnapshot>
 }
-
-// -- Types for bulk advisory response --
-
-interface BulkAdvisory {
-  severity: string
-  vulnerable_versions: string
-  title: string
-}
-
-type BulkAdvisoryResponse = Record<string, BulkAdvisory[]>
 
 // ---------------------------------------------------------------------------
 // Phase A: Collect the dependency closure from pnpm-lock.yaml
@@ -190,22 +181,6 @@ function depsToPayload(deps: DependencyMap): Record<string, string[]> {
   return payload
 }
 
-async function fetchAdvisories(deps: DependencyMap): Promise<BulkAdvisoryResponse> {
-  const res = await fetch(BULK_ENDPOINT, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(depsToPayload(deps)),
-    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
-  })
-
-  if (!res.ok) {
-    const body = await res.text().catch(() => '')
-    throw new Error(`Registry returned ${res.status}: ${body}`)
-  }
-
-  return res.json()
-}
-
 // ---------------------------------------------------------------------------
 // Phase C: Map bulk advisory response to AuditMetadata
 // ---------------------------------------------------------------------------
@@ -286,7 +261,7 @@ export async function pnpmBulkAuditor(
 ): Promise<DependencyAuditReport> {
   const includeDevDeps = options?.includeDevDeps ?? false
   const deps = collectDependencies(options?.path, includeDevDeps)
-  const advisories = await fetchAdvisories(deps)
+  const advisories = await fetchBulkAdvisories(depsToPayload(deps))
   const directSet = options?.detailed
     ? readDirectDependencies(options?.path, includeDevDeps)
     : undefined
