@@ -1,7 +1,7 @@
 import * as core from '@actions/core'
 import { context } from '@actions/github'
 
-import { auditDependencies } from './dependency/index.js'
+import { auditDependencies, RegistryUnavailableError } from './dependency/index.js'
 
 import {
   hasVulnerabilities,
@@ -35,8 +35,18 @@ async function run() {
     path: core.getInput('path') || process.env.GITHUB_WORKSPACE!,
     includeDevDeps,
     detailed,
+  }).catch((error: unknown) => {
+    if (error instanceof RegistryUnavailableError) {
+      core.setOutput('registry-unavailable', 'true')
+      throw new Error(
+        `The audit could not run: the npm advisory registry was unreachable. This is an infrastructure failure, not a vulnerability. ${error.message}`,
+        { cause: error },
+      )
+    }
+    throw error
   })
 
+  core.setOutput('registry-unavailable', 'false')
   core.info(`Report: ${JSON.stringify(report, null, 2)}`)
 
   if (!hasVulnerabilities(report)) {
@@ -53,6 +63,7 @@ async function run() {
 if (context.eventName === 'pull_request') {
   run().catch((error) => {
     if (typeof error === 'string' || error instanceof Error) {
+      if (error instanceof Error && error.cause) core.info(`Caused by: ${String(error.cause)}`)
       core.setFailed(error)
     } else {
       console.error(error)

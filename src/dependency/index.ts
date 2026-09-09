@@ -3,6 +3,8 @@ import type { DependencyAuditOptions } from './types.js'
 import { pnpmBulkAuditor } from './pnpmBulkAuditor.js'
 import { yarnAuditor } from './yarnAuditor.js'
 
+export { RegistryUnavailableError } from './registryClient.js'
+
 const DEPENDENCY_AUDITORS = {
   pnpm: pnpmBulkAuditor,
   yarn: yarnAuditor,

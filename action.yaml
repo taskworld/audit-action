@@ -23,6 +23,8 @@ outputs:
     description: 'Rendered vulnerability report (markdown)'
   failed:
     description: 'Set to true when vulnerabilities exceed failure-level'
+  registry-unavailable:
+    description: 'Set to true when the audit could not run because the npm advisory registry was unreachable'
 runs:
   using: 'node24'
   main: 'dist/index.js'
