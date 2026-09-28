@@ -140,7 +140,6 @@ export function collectFromLockfile(
   return deps
 }
 
-// Follow recorded parents back to the direct dependency: "a@1 > b@2 > c@3".
 export function dependencyPath(parents: ParentMap, id: string): string {
   const chain = [id]
   for (let parent = parents.get(id); parent; parent = parents.get(parent)) chain.unshift(parent)
