@@ -94,7 +94,6 @@ export function collectFromLockfile(
   const snapshots = lockfile.snapshots ?? {}
   const deps: DependencyMap = new Map()
   const visited = new Set<string>()
-  // Breadth-first, so the first parent recorded for a package lies on a shortest path.
   const queue: Array<{ name: string; version: string; parent?: string }> = []
 
   const enqueueDirect = (record?: Record<string, LockfileDependency>) => {
