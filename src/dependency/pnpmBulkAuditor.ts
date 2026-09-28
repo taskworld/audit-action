@@ -13,7 +13,6 @@ import { fetchBulkAdvisories } from './registryClient.js'
 const LOCKFILE_NAME = 'pnpm-lock.yaml'
 
 type DependencyMap = Map<string, Set<string>>
-// `name@version` -> the `name@version` that first pulled it in (undefined for direct deps).
 type ParentMap = Map<string, string | undefined>
 
 // -- Types for the pnpm-lock.yaml sections we consume --
