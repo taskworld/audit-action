@@ -13,6 +13,8 @@ import { fetchBulkAdvisories } from './registryClient.js'
 const LOCKFILE_NAME = 'pnpm-lock.yaml'
 
 type DependencyMap = Map<string, Set<string>>
+// `name@version` -> the `name@version` that first pulled it in (undefined for direct deps).
+type ParentMap = Map<string, string | undefined>
 
 // -- Types for the pnpm-lock.yaml sections we consume --
 
@@ -80,6 +82,7 @@ export function collectFromLockfile(
   lockfile: Lockfile,
   importerKey: string,
   includeDevDeps: boolean,
+  parents?: ParentMap,
 ): DependencyMap {
   const importer = lockfile.importers?.[importerKey]
   if (!importer) {
@@ -92,7 +95,8 @@ export function collectFromLockfile(
   const snapshots = lockfile.snapshots ?? {}
   const deps: DependencyMap = new Map()
   const visited = new Set<string>()
-  const queue: Array<{ name: string; version: string }> = []
+  // Breadth-first, so the first parent recorded for a package lies on a shortest path.
+  const queue: Array<{ name: string; version: string; parent?: string }> = []
 
   const enqueueDirect = (record?: Record<string, LockfileDependency>) => {
     for (const [name, dep] of Object.entries(record ?? {})) {
@@ -103,8 +107,8 @@ export function collectFromLockfile(
   enqueueDirect(importer.optionalDependencies)
   if (includeDevDeps) enqueueDirect(importer.devDependencies)
 
-  while (queue.length > 0) {
-    const { name, version } = queue.pop()!
+  for (let i = 0; i < queue.length; i++) {
+    const { name, version, parent } = queue[i]
     if (!isRegistryVersion(version)) continue
 
     // Snapshot keys use the full suffixed version (e.g. "foo@1.2.3(react@18.3.1)").
@@ -122,20 +126,34 @@ export function collectFromLockfile(
       versions.add(clean)
     }
 
+    const id = `${name}@${clean}`
+    if (parents && !parents.has(id)) parents.set(id, parent)
+
     const snapshot = snapshots[snapshotKey]
     if (!snapshot) continue
     for (const [childName, childVersion] of Object.entries(snapshot.dependencies ?? {})) {
-      queue.push({ name: childName, version: childVersion })
+      queue.push({ name: childName, version: childVersion, parent: id })
     }
     for (const [childName, childVersion] of Object.entries(snapshot.optionalDependencies ?? {})) {
-      queue.push({ name: childName, version: childVersion })
+      queue.push({ name: childName, version: childVersion, parent: id })
     }
   }
 
   return deps
 }
 
-function collectDependencies(cwd: string | undefined, includeDevDeps: boolean): DependencyMap {
+// Follow recorded parents back to the direct dependency: "a@1 > b@2 > c@3".
+export function dependencyPath(parents: ParentMap, id: string): string {
+  const chain = [id]
+  for (let parent = parents.get(id); parent; parent = parents.get(parent)) chain.unshift(parent)
+  return chain.join(' > ')
+}
+
+function collectDependencies(
+  cwd: string | undefined,
+  includeDevDeps: boolean,
+  parents?: ParentMap,
+): DependencyMap {
   const targetDir = cwd ?? process.cwd()
   const lockfilePath = findLockfile(targetDir)
   if (!lockfilePath) {
@@ -144,7 +162,7 @@ function collectDependencies(cwd: string | undefined, includeDevDeps: boolean): 
 
   const lockfile = parseYaml(readFileSync(lockfilePath, 'utf8')) as Lockfile
   const importerKey = toImporterKey(dirname(lockfilePath), targetDir)
-  return collectFromLockfile(lockfile, importerKey, includeDevDeps)
+  return collectFromLockfile(lockfile, importerKey, includeDevDeps, parents)
 }
 
 function readDirectDependencies(cwd: string | undefined, includeDevDeps: boolean): Set<string> {
@@ -191,6 +209,7 @@ export function mapToAuditMetadata(
   deps: DependencyMap,
   advisories: BulkAdvisoryResponse,
   directSet?: Set<string>,
+  parents?: ParentMap,
 ): DependencyAuditReport {
   const vulnerabilities: Record<Severity, number> = {
     info: 0,
@@ -234,7 +253,9 @@ export function mapToAuditMetadata(
         const key = `${pkg}@${version}`
         if (seenBucket.has(key)) continue
         seenBucket.add(key)
-        bucket.push({ name: pkg, version, direct: isDirect })
+        const entry: VulnerablePackage = { name: pkg, version, direct: isDirect }
+        if (parents) entry.path = dependencyPath(parents, key)
+        bucket.push(entry)
       }
     }
   }
@@ -260,10 +281,11 @@ export async function pnpmBulkAuditor(
   options?: DependencyAuditOptions,
 ): Promise<DependencyAuditReport> {
   const includeDevDeps = options?.includeDevDeps ?? false
-  const deps = collectDependencies(options?.path, includeDevDeps)
+  const parents: ParentMap | undefined = options?.detailed ? new Map() : undefined
+  const deps = collectDependencies(options?.path, includeDevDeps, parents)
   const advisories = await fetchBulkAdvisories(depsToPayload(deps))
   const directSet = options?.detailed
     ? readDirectDependencies(options?.path, includeDevDeps)
     : undefined
-  return mapToAuditMetadata(deps, advisories, directSet)
+  return mapToAuditMetadata(deps, advisories, directSet, parents)
 }

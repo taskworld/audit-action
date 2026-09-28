@@ -6,6 +6,7 @@ import { auditDependencies, RegistryUnavailableError } from './dependency/index.
 import {
   hasVulnerabilities,
   isSeverityLevel,
+  listVulnerablePackages,
   noVulnerabilities,
   SEVERITY_LEVELS,
   someVulnerabilities,
@@ -48,6 +49,7 @@ async function run() {
 
   core.setOutput('registry-unavailable', 'false')
   core.info(`Report: ${JSON.stringify(report, null, 2)}`)
+  core.setOutput('vulnerable-packages', JSON.stringify(listVulnerablePackages(report)))
 
   if (!hasVulnerabilities(report)) {
     core.setOutput('failed', 'false')
