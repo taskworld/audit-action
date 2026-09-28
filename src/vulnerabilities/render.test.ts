@@ -153,3 +153,45 @@ describe('someVulnerabilities', () => {
     expect(out).not.toContain('`> lodash@4.17.20`')
   })
 })
+
+describe('someVulnerabilities with includePaths', () => {
+  const report = makeReport({
+    vulnerabilities: { info: 0, low: 1, moderate: 0, high: 1, critical: 0 },
+    details: {
+      low: [
+        {
+          name: 'bytes',
+          version: '3.1.0',
+          direct: false,
+          path: 'express@4.17.1 > body-parser@1.19.0 > bytes@3.1.0',
+        },
+      ],
+      high: [{ name: 'axios', version: '0.21.1', direct: true, path: 'axios@0.21.1' }],
+    },
+  })
+
+  it('leaves the report unchanged when includePaths is not set', () => {
+    expect(someVulnerabilities('my-pkg', report, { includePaths: false })).toBe(
+      someVulnerabilities('my-pkg', report),
+    )
+    expect(someVulnerabilities('my-pkg', report)).not.toContain('<details>')
+  })
+
+  it('appends a collapsible list sorted by severity with the full path', () => {
+    const out = someVulnerabilities('my-pkg', report, { includePaths: true })
+
+    expect(out).toContain(`</table>
+
+<details>
+<summary>Vulnerable packages (2)</summary>
+
+- 🟠 High · \`axios@0.21.1\` · \`axios@0.21.1\`
+- 🔵 Low · \`bytes@3.1.0\` · \`express@4.17.1 > body-parser@1.19.0 > bytes@3.1.0\`
+</details>`)
+  })
+
+  it('appends nothing without details', () => {
+    const out = someVulnerabilities('my-pkg', makeReport(), { includePaths: true })
+    expect(out).not.toContain('<details>')
+  })
+})

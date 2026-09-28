@@ -18,6 +18,9 @@ inputs:
   detailed-report:
     description: 'Include a 3rd column listing affected packages per severity'
     default: 'false'
+  include-paths:
+    description: 'Append a collapsible list of vulnerable packages with their dependency path to the report (requires detailed-report)'
+    default: 'false'
 outputs:
   vulnerabilities:
     description: 'Rendered vulnerability report (markdown)'

@@ -22,6 +22,7 @@ async function run() {
   const pm = core.getInput('package-manager')
   const includeDevDeps = core.getInput('include-dev-deps').toLowerCase() === 'true'
   const detailed = core.getInput('detailed-report').toLowerCase() === 'true'
+  const includePaths = core.getInput('include-paths').toLowerCase() === 'true'
 
   if (!isSeverityLevel(fail)) {
     throw new Error(`failure-level should be one of [${SEVERITY_LEVELS.join(', ')}]`)
@@ -57,7 +58,7 @@ async function run() {
     return
   }
 
-  core.setOutput('vulnerabilities', someVulnerabilities(name, report))
+  core.setOutput('vulnerabilities', someVulnerabilities(name, report, { includePaths }))
   core.setOutput('failed', String(hasVulnerabilities(report, fail)))
 }
 

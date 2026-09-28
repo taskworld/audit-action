@@ -43,6 +43,7 @@ jobs:
         with:
           failure-level: high
           detailed-report: 'true'
+          include-paths: 'true'
           package-manager: pnpm
           package-name: audit-action
 
