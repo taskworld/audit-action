@@ -11,6 +11,7 @@ export type VulnerablePackage = {
   name: string
   version: string
   direct: boolean
+  path?: string
 }
 
 export type DependencyAuditReport = PNPMAuditReport.AuditMetadata & {

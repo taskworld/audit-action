@@ -93,6 +93,7 @@ vi.mock('node:fs', () => ({
 
 import {
   collectFromLockfile,
+  dependencyPath,
   mapToAuditMetadata,
   pnpmBulkAuditor,
   toImporterKey,
@@ -186,6 +187,41 @@ describe('collectFromLockfile', () => {
     }
     const deps = collectFromLockfile(withLink, '.', false)
     expect(deps.size).toBe(0)
+  })
+
+  it('records the shortest parent chain for each package', () => {
+    const parents = new Map<string, string | undefined>()
+    collectFromLockfile(lockfile, '.', false, parents)
+
+    expect(dependencyPath(parents, 'bytes@3.1.0')).toBe(
+      'express@4.17.1 > body-parser@1.19.0 > bytes@3.1.0',
+    )
+    expect(dependencyPath(parents, 'lodash@4.17.20')).toBe('lodash@4.17.20')
+  })
+
+  it('prefers the shortest chain when a package is reachable several ways', () => {
+    const diamond = {
+      importers: {
+        '.': {
+          dependencies: {
+            a: { specifier: '^1', version: '1.0.0' },
+            c: { specifier: '^1', version: '1.0.0' },
+          },
+        },
+      },
+      snapshots: {
+        'a@1.0.0': { dependencies: { b: '1.0.0' } },
+        'b@1.0.0': { dependencies: { d: '1.0.0' } },
+        'c@1.0.0': { dependencies: { d: '1.0.0' } },
+        'd@1.0.0': { dependencies: { a: '1.0.0' } },
+      },
+    }
+    const parents = new Map<string, string | undefined>()
+    collectFromLockfile(diamond, '.', false, parents)
+
+    expect(dependencyPath(parents, 'd@1.0.0')).toBe('c@1.0.0 > d@1.0.0')
+    // The a -> b -> d -> a cycle must not loop.
+    expect(dependencyPath(parents, 'a@1.0.0')).toBe('a@1.0.0')
   })
 
   it('throws when the importer key is missing', () => {
@@ -375,12 +411,14 @@ describe('pnpmBulkAuditor', () => {
     try {
       const report = await pnpmBulkAuditor({ path: '/app', detailed: true })
 
-      expect(report.details?.high).toEqual([{ name: 'axios', version: '0.21.1', direct: true }])
+      expect(report.details?.high).toEqual([
+        { name: 'axios', version: '0.21.1', direct: true, path: 'axios@0.21.1' },
+      ])
       expect(report.details?.critical).toEqual([
-        { name: 'lodash', version: '4.17.20', direct: false },
+        { name: 'lodash', version: '4.17.20', direct: false, path: 'lodash@4.17.20' },
       ])
       expect(report.details?.moderate).toEqual([
-        { name: 'lodash', version: '4.17.20', direct: false },
+        { name: 'lodash', version: '4.17.20', direct: false, path: 'lodash@4.17.20' },
       ])
       expect(report.vulnerabilities).toEqual({
         info: 0,
@@ -389,6 +427,32 @@ describe('pnpmBulkAuditor', () => {
         high: 1,
         critical: 1,
       })
+    } finally {
+      rootPackageJson = null
+    }
+  })
+
+  it('reports the full path of a vulnerable transitive dependency', async () => {
+    lockfileExists = true
+    fetchMock.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        bytes: [{ severity: 'low', vulnerable_versions: '<3.1.2', title: 'bytes issue' }],
+      }),
+    })
+    rootPackageJson = { dependencies: { express: '^4' } }
+
+    try {
+      const report = await pnpmBulkAuditor({ path: '/app', detailed: true })
+
+      expect(report.details?.low).toEqual([
+        {
+          name: 'bytes',
+          version: '3.1.0',
+          direct: false,
+          path: 'express@4.17.1 > body-parser@1.19.0 > bytes@3.1.0',
+        },
+      ])
     } finally {
       rootPackageJson = null
     }

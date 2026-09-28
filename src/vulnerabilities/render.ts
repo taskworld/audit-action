@@ -2,6 +2,8 @@ import type { Severity } from 'audit-types'
 
 import type { DependencyAuditReport, VulnerablePackage } from '../dependency/types'
 
+import { listVulnerablePackages } from './helpers'
+
 export function noVulnerabilities(packageName: string) {
   return `
   ✅ No vulnerabilities found in **${packageName}**.
@@ -47,7 +49,30 @@ export function formatPackages(pkgs: VulnerablePackage[]): string {
     .join(', ')
 }
 
-export function someVulnerabilities(packageName: string, report: DependencyAuditReport) {
+export function formatPaths(report: DependencyAuditReport): string {
+  const packages = listVulnerablePackages(report)
+  if (packages.length === 0) return ''
+
+  const lines = packages.map(
+    (p) =>
+      `- ${SEVERITY_LABELS[p.severity]} · \`${p.name}@${p.version}\`` +
+      (p.path ? ` · \`${p.path}\`` : ''),
+  )
+
+  return `
+
+<details>
+<summary>Vulnerable packages (${packages.length})</summary>
+
+${lines.join('\n')}
+</details>`
+}
+
+export function someVulnerabilities(
+  packageName: string,
+  report: DependencyAuditReport,
+  options?: { includePaths?: boolean },
+) {
   const { vulnerabilities, details } = report
 
   const entries = Object.entries(vulnerabilities) as [Severity, number][]
@@ -69,5 +94,5 @@ export function someVulnerabilities(packageName: string, report: DependencyAudit
     <tbody>
     ${rows.join('\n')}
     </tbody>
-  </table>`
+  </table>${options?.includePaths ? formatPaths(report) : ''}`
 }

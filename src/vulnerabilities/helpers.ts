@@ -1,6 +1,6 @@
 import { Severity } from 'audit-types'
 
-import type { DependencyAuditReport } from '../dependency/types'
+import type { DependencyAuditReport, VulnerablePackage } from '../dependency/types'
 
 export const SEVERITY_LEVELS: Severity[] = ['info', 'low', 'moderate', 'high', 'critical']
 
@@ -19,4 +19,17 @@ export function hasVulnerabilities(
   level: Severity = 'low',
 ): boolean {
   return countVulnerabilities(report, level) > 0
+}
+
+// Flattens the detailed report into one list, most severe first.
+export function listVulnerablePackages(
+  report: DependencyAuditReport,
+): Array<VulnerablePackage & { severity: Severity }> {
+  return [...SEVERITY_LEVELS]
+    .reverse()
+    .flatMap((severity) =>
+      [...(report.details?.[severity] ?? [])]
+        .sort((a, b) => a.name.localeCompare(b.name) || a.version.localeCompare(b.version))
+        .map((pkg) => ({ severity, ...pkg })),
+    )
 }

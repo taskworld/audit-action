@@ -6,6 +6,7 @@ import { auditDependencies, RegistryUnavailableError } from './dependency/index.
 import {
   hasVulnerabilities,
   isSeverityLevel,
+  listVulnerablePackages,
   noVulnerabilities,
   SEVERITY_LEVELS,
   someVulnerabilities,
@@ -21,6 +22,7 @@ async function run() {
   const pm = core.getInput('package-manager')
   const includeDevDeps = core.getInput('include-dev-deps').toLowerCase() === 'true'
   const detailed = core.getInput('detailed-report').toLowerCase() === 'true'
+  const includePaths = core.getInput('include-paths').toLowerCase() === 'true'
 
   if (!isSeverityLevel(fail)) {
     throw new Error(`failure-level should be one of [${SEVERITY_LEVELS.join(', ')}]`)
@@ -48,6 +50,7 @@ async function run() {
 
   core.setOutput('registry-unavailable', 'false')
   core.info(`Report: ${JSON.stringify(report, null, 2)}`)
+  core.setOutput('vulnerable-packages', JSON.stringify(listVulnerablePackages(report)))
 
   if (!hasVulnerabilities(report)) {
     core.setOutput('failed', 'false')
@@ -55,7 +58,7 @@ async function run() {
     return
   }
 
-  core.setOutput('vulnerabilities', someVulnerabilities(name, report))
+  core.setOutput('vulnerabilities', someVulnerabilities(name, report, { includePaths }))
   core.setOutput('failed', String(hasVulnerabilities(report, fail)))
 }
 
